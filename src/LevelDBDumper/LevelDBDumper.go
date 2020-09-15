@@ -41,13 +41,13 @@ func main() {
 	}
 
 	db, err := leveldb.OpenFile(dbPath, nil)
-	defer db.Close()
-
+	
 	if err != nil {
 		fmt.Println("Could not open DB from:", dbPath)
 		printUsage()
 		return
 	}
+	defer db.Close()
 
 	iter := db.NewIterator(nil, nil)
 	
