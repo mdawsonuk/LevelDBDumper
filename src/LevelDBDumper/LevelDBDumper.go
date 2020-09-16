@@ -1,11 +1,10 @@
 package main
 
-// With thanks to https://github.com/harshvsingh8/leveldb-reader for the bulk of the LevelDB Go code
-
 import (
 	"encoding/csv"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 	"time"
 	"unicode"
@@ -39,6 +38,10 @@ func Color(colorString string) func(...interface{}) string {
 	return sprint
 }
 
+var (
+	searchResult []string
+)
+
 func main() {
 
 	fmt.Println()
@@ -54,7 +57,11 @@ func main() {
 
 		for i := 1; i < len(os.Args); i++ {
 			if os.Args[i] == "-d" && i+1 < len(os.Args) {
-				dbPath = os.Args[i+1]
+				path, err := filepath.Abs(os.Args[i+1])
+				if err != nil {
+					fmt.Println(Fata("Unable to get absolute path of ", path))
+				}
+				dbPath = path
 			}
 			if os.Args[i] == "-q" {
 				quiet = true
@@ -101,24 +108,71 @@ func main() {
 	fmt.Println("Command Line:", strings.Join(os.Args[1:], " "))
 	fmt.Println()
 
-	if !checkForAdmin() {
-		fmt.Println(Warn("Administrative privileges not found!"))
-	}
-
 	dbPresent, _ := fileExists(rootPath)
 
 	if !dbPresent {
-		fmt.Println(Fata("The DB path", rootPath, "doesn't exist"))
+		fmt.Println(Fata("The DB path ", rootPath, " doesn't exist"))
 		printUsage()
 		return
 	}
 
-	openDb(rootPath, quiet, csvPath)
+	testFile, err := os.Open(rootPath)
+	if err != nil {
+		fmt.Println(Warn("Unable to open ", rootPath, " - make sure you haven't escaped the path with \\\""))
+		os.Exit(-1)
+	}
+	defer testFile.Close()
+
+	start := time.Now()
+	err = filepath.Walk(rootPath, findFile)
+	if err != nil {
+		return
+	}
+	elapsed := time.Now().Sub(start)
+	fmt.Println(Warn(len(searchResult), " LevelDB databases found"))
+	fmt.Println(Info("Searching for LevelDB databases from ", rootPath, " took ", elapsed))
+	fmt.Println()
+	for _, v := range searchResult {
+		openDb(v, quiet, csvPath)
+	}
+}
+
+func findFile(path string, fileInfo os.FileInfo, err error) error {
+	if err != nil {
+		fmt.Println(Warn("Access denied for ", path))
+		return nil
+	}
+
+	absolute, err := filepath.Abs(path)
+
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+
+	if fileInfo.IsDir() {
+		files, err := filepath.Glob(filepath.Join(absolute, "CURRENT"))
+		if err != nil {
+			fmt.Println(Fata(err))
+		}
+		if len(files) > 0 {
+			files, err := filepath.Glob(filepath.Join(absolute, "MANIFEST-*"))
+			if err != nil {
+				fmt.Println(Fata(err))
+			}
+			if len(files) > 0 {
+				searchResult = append(searchResult, absolute)
+			}
+		}
+		return nil
+	}
+
+	return nil
 }
 
 func openDb(dbPath string, quiet bool, csvPath string) {
+
 	fmt.Println(Info("Opening DB at ", dbPath))
-	fmt.Println()
 
 	options := &opt.Options{
 		ErrorIfMissing: true,
@@ -130,8 +184,11 @@ func openDb(dbPath string, quiet bool, csvPath string) {
 
 	if err != nil {
 		fmt.Println(Fata("Could not open DB at ", dbPath))
+		fmt.Println()
 		return
 	}
+	fmt.Println()
+
 	defer db.Close()
 
 	if csvPath != "" {
@@ -180,14 +237,6 @@ func openDb(dbPath string, quiet bool, csvPath string) {
 	elapsed := time.Now().Sub(start)
 	fmt.Println(Info("Dumping LevelDB database at ", dbPath, " took ", elapsed))
 	fmt.Println()
-}
-
-func checkForAdmin() bool {
-	_, err := os.Open("\\\\.\\PHYSICALDRIVE0")
-	if err != nil {
-		return false
-	}
-	return true
 }
 
 func removeControlChars(str string) string {
