@@ -75,11 +75,11 @@ func main() {
 
 	printUsage := func() {
 		fmt.Println("        d               Directory to recursively process. This is required.")
-		fmt.Println("        q               Don't output all key/value pairs to console. Default is false")
+		fmt.Println("        q               Don't output all key/value pairs to console. Default will output all key/value pairs")
 		fmt.Println("        csv             Directory to save CSV formatted results to. Be sure to include the full path in double quotes")
 		fmt.Println()
-		fmt.Println("Examples: LevelDBParser.exe -f \"C:\\Temp\\leveldb\\\"")
-		fmt.Println("          LevelDBParser.exe -f \"C:\\Temp\\leveldb\\\" --csv \"C:\\Temp\\\"")
+		fmt.Println("Examples: LevelDBParser.exe -f \"C:\\Temp\\leveldb\"")
+		fmt.Println("          LevelDBParser.exe -f \"C:\\Temp\\leveldb\" --csv \"C:\\Temp\" -q")
 		fmt.Println()
 		fmt.Println("          Short options (single letter) are prefixed with a single dash. Long commands are prefixed with two dashes")
 		fmt.Println()
@@ -192,25 +192,13 @@ func openDb(dbPath string, quiet bool, csvPath string) {
 
 	defer db.Close()
 
-	csvWriter := csv.NewWriter(nil)
-	if csvPath != "" {
-		timeNow := time.Now()
-		year, month, day := timeNow.Date()
-		escapedPath := strings.ReplaceAll(strings.ReplaceAll(strings.ReplaceAll(dbPath, "/", "_"), "\\", "_"), ":", "")
-		csvFileName := fmt.Sprintf("%v%v%v%v%v%v_%v_LevelDBDumper.csv", year, int(month), day, timeNow.Hour(), timeNow.Minute(), timeNow.Second(), escapedPath)
-		file, err := os.Create(filepath.Join(csvPath, csvFileName))
-		checkError(err)
-		defer file.Close()
-
-		csvWriter = csv.NewWriter(file)
-		csvWriter.Write([]string{"Key", "Value"})
-	}
-
 	iter := db.NewIterator(nil, nil)
 
 	if !quiet {
 		fmt.Println(Info(fmt.Sprintf("%-56vValue:", "Key:")))
 	}
+
+	var data = [][]string{}
 
 	for iter.Next() {
 		key := iter.Key()
@@ -234,9 +222,29 @@ func openDb(dbPath string, quiet bool, csvPath string) {
 			}
 		}
 
-		if csvPath != "" {
-			csvWriter.Write([]string{keyName, value})
-			csvWriter.Flush()
+		data = append(data, []string{keyName, value})
+	}
+
+	if csvPath != "" {
+		if len(data) > 0 {
+			timeNow := time.Now()
+			year, month, day := timeNow.Date()
+			escapedPath := strings.ReplaceAll(strings.ReplaceAll(strings.ReplaceAll(dbPath, "/", "_"), "\\", "_"), ":", "")
+			csvFileName := fmt.Sprintf("%v%v%v%v%v%v_%v_LevelDBDumper.csv", year, int(month), day, timeNow.Hour(), timeNow.Minute(), timeNow.Second(), escapedPath)
+			file, err := os.Create(filepath.Join(csvPath, csvFileName))
+			checkError(err)
+			defer file.Close()
+
+			csvWriter := csv.NewWriter(file)
+			csvWriter.Write([]string{"Key", "Value"})
+
+			for _, value := range data {
+				err := csvWriter.Write(value)
+				checkError(err)
+				csvWriter.Flush()
+			}
+		} else {
+			fmt.Println(Warn("Parsed database at ", dbPath, " but no key/value pairs were found"))
 		}
 	}
 

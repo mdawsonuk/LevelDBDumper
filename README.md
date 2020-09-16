@@ -50,31 +50,38 @@ A massive thanks to Harsh Vardhan Singh and his [repo](https://github.com/harshv
 * ~~Quiet mode to avoid dumping all Key/Values~~ :heavy_check_mark:
 * ~~Truncate long Values in non-quiet output~~ :heavy_check_mark:
 * ~~Display coloured Key/Value for non-quiet mode~~ :heavy_check_mark:
+* ~~Ignore processing empty LevelDB databases to avoid creating empty output files~~ :heavy_check_mark:
 * Travis CI builds for Windows, Linux, OS X
 * Check if user has Administrator/root privileges
 * Allow customisation of CSV output name
 * Batch CSV file (All LevelDB dumps into one file)
-* Ignore processing empty LevelDB databases to avoid creating empty output files
 * JSON export
 * Text export
 
 ## Usage
 
-To dump all of the contents to a file, run the program on the Command Line, providing the full path to the LevelDB database.
+```
+LevelDB Dumper 2.0.0.0
 
-```sh
-LevelDBDumper.exe C:\Users\User\AppData\Roaming\Discord\Local Storage\leveldb
+Author: Matt Dawson
+
+        d               Directory to recursively process. This is required.
+        q               Don't output all key/value pairs to console. Default will output all key/value pairs.
+        csv             Directory to save CSV formatted results to. Be sure to include the full path in double quotes
+
+Examples: LevelDBParser.exe -f "C:\Temp\leveldb"
+          LevelDBParser.exe -f "C:\Temp\leveldb" --csv "C:\Temp" -q
+
+          Short options (single letter) are prefixed with a single dash. Long commands are prefixed with two dashes
 ```
 
-Redirecting the output to a file will remove line wrapping and make it easier to view and search for keys in a text document
+LevelDB Dumper will search recursively from the directory passed to it for LevelDB databases. Upon finding one, it will be queued for dumping. Once it has searched the entire drive, the databases will be enumerated from the saved list and dumped to the console.
 
-```sh
-LevelDBDumper.exe C:\Users\User\AppData\Roaming\Discord\Local Storage\leveldb > DiscordDBDump.txt
-```
+It is recommended to specify an output file for dumping. Using `--csv <Directory>` will output a CSV file per LevelDB database found, containing the timestamp of dumping and path to the LevelDB database.
 
-It is worth noting that all Unicode control characters/non-graphics characters are stripped from the output strings. For applications such as Discord, where null terminators are found in Key names, this is used to improve output formatting.
+It is worth noting that all Unicode control characters/non-graphics characters are stripped from the output strings but are retained for output files, such as CSV. For applications such as Discord, where null terminators are found in Key names, this is used to improve output formatting.
 
-There have been issues with Windows 10 where the program is opened in a new window instead of the current Command Line window instance. A work-around for this appears to be running the Command Prompt/Powershell as Administrator.
+There have been issues with Windows 10 where the program is opened in a new window instead of the current Command Line window instance, meaning that the output is not visible. A work-around for this appears to be running the Command Prompt/Powershell as Administrator. However, for analysis of output, the key/value pairs should be output to a file rather than redirecting or analysing through the command line window.
 
 ## Getting Started
 
@@ -88,11 +95,9 @@ LevelDB is written in Go, so it can be run cross-platform. If you are building f
 
 #### From Releases
 
-1. Download the latest [release](https://github.com/mdawsonuk/LevelDBDumper/releases).
+1. Download the latest [release](https://github.com/mdawsonuk/LevelDBDumper/releases) for your platform of choice.
 
-2. Unzip the compressed release to a folder of your choice.
-
-3. That's it!
+2. That's it!
 
 #### From Repo
 
