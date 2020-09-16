@@ -51,7 +51,7 @@ A massive thanks to Harsh Vardhan Singh and his [repo](https://github.com/harshv
 * ~~Truncate long Values in non-quiet output~~ :heavy_check_mark:
 * ~~Display coloured Key/Value for non-quiet mode~~ :heavy_check_mark:
 * ~~Ignore processing empty LevelDB databases to avoid creating empty output files~~ :heavy_check_mark:
-* Travis CI builds for Windows, Linux, OS X
+* Travis CI builds for Windows and Linux
 * Check if user has Administrator/root privileges
 * Allow customisation of CSV output name
 * Batch CSV file (All LevelDB dumps into one file)
