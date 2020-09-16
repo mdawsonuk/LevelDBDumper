@@ -28,6 +28,7 @@
 ## Table of Contents
 
 * [About the Project](#about-the-project)
+* [TODO](#todo)
 * [Usage](#usage)
 * [Getting Started](#getting-started)
   * [Prerequisites](#prerequisites)
@@ -41,6 +42,21 @@ This project was created out of a lack of a cross-platform tool which was able t
 I'm by no means an expert at using Go, so the code might not be as efficient or clean as it could be. If you want to help improve code quality, please consider [contributing](#contributing).
 
 A massive thanks to Harsh Vardhan Singh and his [repo](https://github.com/harshvsingh8/leveldb-reader) which did much of the LevelDB enumeration work for me.
+
+## TODO
+* ~~Recursively parse from directory instead of providing one LevelDB database~~ :heavy_check_mark:
+* ~~Improved help dialog with list of arguments and examples~~ :heavy_check_mark:
+* ~~Export to CSV file for each discovered LevelDB database~~ :heavy_check_mark:
+* ~~Quiet mode to avoid dumping all Key/Values~~ :heavy_check_mark:
+* ~~Truncate long Values in non-quiet output~~ :heavy_check_mark:
+* ~~Display coloured Key/Value for non-quiet mode~~ :heavy_check_mark:
+* Travis CI builds for Windows, Linux, OS X
+* Check if user has Administrator/root privileges
+* Allow customisation of CSV output name
+* Batch CSV file (All LevelDB dumps into one file)
+* Ignore processing empty LevelDB databases to avoid creating empty output files
+* JSON export
+* Text export
 
 ## Usage
 
