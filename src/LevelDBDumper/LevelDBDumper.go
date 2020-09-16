@@ -119,7 +119,7 @@ func main() {
 	testFile, err := os.Open(rootPath)
 	if err != nil {
 		fmt.Println(Warn("Unable to open ", rootPath, " - make sure you haven't escaped the path with \\\""))
-		os.Exit(-1)
+		return
 	}
 	defer testFile.Close()
 
@@ -129,11 +129,16 @@ func main() {
 		return
 	}
 	elapsed := time.Now().Sub(start)
-	fmt.Println(Warn(len(searchResult), " LevelDB databases found"))
-	fmt.Println(Info("Searching for LevelDB databases from ", rootPath, " took ", elapsed))
-	fmt.Println()
-	for _, v := range searchResult {
-		openDb(v, quiet, csvPath)
+	if len(searchResult) > 0 {
+		fmt.Println(Warn(len(searchResult), " LevelDB databases found"))
+		fmt.Println(Info("Searching for LevelDB databases from ", rootPath, " took ", elapsed))
+		fmt.Println()
+		for _, v := range searchResult {
+			openDb(v, quiet, csvPath)
+		}
+	} else {
+		fmt.Println(Fata("0 LevelDB databases found"))
+		fmt.Println()
 	}
 }
 
@@ -152,14 +157,10 @@ func findFile(path string, fileInfo os.FileInfo, err error) error {
 
 	if fileInfo.IsDir() {
 		files, err := filepath.Glob(filepath.Join(absolute, "CURRENT"))
-		if err != nil {
-			fmt.Println(Fata(err))
-		}
+		checkError(err)
 		if len(files) > 0 {
 			files, err := filepath.Glob(filepath.Join(absolute, "MANIFEST-*"))
-			if err != nil {
-				fmt.Println(Fata(err))
-			}
+			checkError(err)
 			if len(files) > 0 {
 				searchResult = append(searchResult, absolute)
 			}
@@ -191,10 +192,18 @@ func openDb(dbPath string, quiet bool, csvPath string) {
 
 	defer db.Close()
 
+	csvWriter := csv.NewWriter(nil)
 	if csvPath != "" {
-		csvWriter := csv.NewWriter(os.Stdout)
+		timeNow := time.Now()
+		year, month, day := timeNow.Date()
+		escapedPath := strings.ReplaceAll(strings.ReplaceAll(strings.ReplaceAll(dbPath, "/", "_"), "\\", "_"), ":", "")
+		csvFileName := fmt.Sprintf("%v%v%v%v%v%v_%v_LevelDBDumper.csv", year, int(month), day, timeNow.Hour(), timeNow.Minute(), timeNow.Second(), escapedPath)
+		file, err := os.Create(filepath.Join(csvPath, csvFileName))
+		checkError(err)
+		defer file.Close()
+
+		csvWriter = csv.NewWriter(file)
 		csvWriter.Write([]string{"Key", "Value"})
-		csvWriter.Flush()
 	}
 
 	iter := db.NewIterator(nil, nil)
@@ -224,12 +233,16 @@ func openDb(dbPath string, quiet bool, csvPath string) {
 				fmt.Printf("%-64v | "+escapedValue+"\n", Warn(escapedKey))
 			}
 		}
+
+		if csvPath != "" {
+			csvWriter.Write([]string{keyName, value})
+			csvWriter.Flush()
+		}
 	}
+
 	iter.Release()
 	err = iter.Error()
-	if err != nil {
-		fmt.Println(Fata(err))
-	}
+	checkError(err)
 	if !quiet {
 		fmt.Println()
 	}
@@ -246,4 +259,10 @@ func removeControlChars(str string) string {
 		}
 		return -1
 	}, str)
+}
+
+func checkError(err error) {
+	if err != nil {
+		fmt.Println(Fata(err))
+	}
 }
