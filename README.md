@@ -69,8 +69,8 @@ Author: Matt Dawson
         q               Don't output all key/value pairs to console. Default will output all key/value pairs.
         csv             Directory to save CSV formatted results to. Be sure to include the full path in double quotes
 
-Examples: LevelDBParser.exe -f "C:\Temp\leveldb"
-          LevelDBParser.exe -f "C:\Temp\leveldb" --csv "C:\Temp" -q
+Examples: LevelDBParser.exe -d "C:\Temp\leveldb"
+          LevelDBParser.exe -d "C:\Temp\leveldb" --csv "C:\Temp" -q
 
           Short options (single letter) are prefixed with a single dash. Long commands are prefixed with two dashes
 ```
