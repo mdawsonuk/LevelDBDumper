@@ -45,7 +45,7 @@ var (
 func main() {
 
 	fmt.Println()
-	fmt.Println("LevelDB Dumper 2.0.0.0")
+	fmt.Println("LevelDB Dumper 2.0.1")
 	fmt.Println()
 	fmt.Println("Author: Matt Dawson")
 	fmt.Println()

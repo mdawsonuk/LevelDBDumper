@@ -61,7 +61,7 @@ A massive thanks to Harsh Vardhan Singh and his [repo](https://github.com/harshv
 ## Usage
 
 ```
-LevelDB Dumper 2.0.0.0
+LevelDB Dumper 2.0.1
 
 Author: Matt Dawson
 
