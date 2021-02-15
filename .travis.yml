@@ -6,20 +6,21 @@ os:
 go:
   - 1.15.x
 
-# deploy:
-#   provider: releases
-#   api_key:
-#     secure: YOUR_API_KEY_ENCRYPTED
-#   file:
-#     - "LevelDBDumper"
-#     - "LevelDBDumper.app"
-#     - "LevelDBDumper.exe"
-#     - "LevelDBDumper_x86.exe"
-#   skip_cleanup: true
-#   on:
-#     tags: true
+deploy:
+  provider: releases
+  api_key: $GITHUB_TOKEN
+  file:
+    - "LevelDBDumper"
+    - "LevelDBDumper.app.zip"
+    - "LevelDBDumper.exe"
+    - "LevelDBDumper_x86.exe"
+  skip_cleanup: true
+  draft: true
+#  on:
+#    tags: true
 
 before_install:
+  - sudo apt install zip -f -y
   - go get github.com/syndtr/goleveldb/leveldb
 
 script:
@@ -32,3 +33,4 @@ script:
   - go build -o LevelDBDumper.exe
   - export GOARCH="386"
   - go build -o LevelDBDumper_x86.exe
+  - zip -q LevelDBDumper.app.zip LevelDBDumper.app
