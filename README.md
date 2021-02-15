@@ -53,7 +53,7 @@ A massive thanks to Harsh Vardhan Singh and his [repo](https://github.com/harshv
 * ~~Truncate long Values in non-quiet output~~ :heavy_check_mark:
 * ~~Display coloured Key/Value for non-quiet mode~~ :heavy_check_mark:
 * ~~Ignore processing empty LevelDB databases to avoid creating empty output files~~ :heavy_check_mark:
-* ~~Travis CI builds for Windows and Linux~~
+* ~~Travis CI builds for Windows and Linux~~ :heavy_check_mark:
 * Check if user has Administrator/root privileges
 * Allow customisation of CSV output name
 * Batch CSV file (All LevelDB dumps into one file)
@@ -63,7 +63,7 @@ A massive thanks to Harsh Vardhan Singh and his [repo](https://github.com/harshv
 ## Usage
 
 ```
-LevelDB Dumper 2.0.1
+LevelDB Dumper 2.0.2
 
 Author: Matt Dawson
 
