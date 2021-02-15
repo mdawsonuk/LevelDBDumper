@@ -23,6 +23,7 @@ before_install:
   - go get github.com/syndtr/goleveldb/leveldb
 
 script:
+  - cd src/LevelDBDumper
   - export GOOS="linux"
   - go build -o LevelDBDumper
   - export GOOS="darwin"

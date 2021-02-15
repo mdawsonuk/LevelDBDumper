@@ -2,7 +2,9 @@
   <h2 align="center">LevelDB Dumper</h3>
 	
   <p align="center">
-    <a href="LICENSE" alt="Licence">
+  <a href="https://travis-ci.com/github/mdawsonuk/LevelDBDumper" alt="Travis CI">
+		<img src="https://img.shields.io/travis/com/mdawsonuk/LevelDBDumper?style=flat-square" /></a>
+  <a href="LICENSE" alt="Licence">
 		<img src="https://img.shields.io/github/license/mdawsonuk/LevelDBDumper?style=flat-square" /></a>
 	<a alt="Releases">
 		<img src="https://img.shields.io/github/v/release/mdawsonuk/LevelDBDumper?include_prereleases&style=flat-square&color=blue" /></a>
