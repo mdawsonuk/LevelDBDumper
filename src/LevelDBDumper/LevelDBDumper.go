@@ -50,10 +50,11 @@ func main() {
 	fmt.Println("Author: Matt Dawson")
 	fmt.Println()
 
-	getArgs := func() (string, bool, string) {
+	getArgs := func() (string, bool, string, bool) {
 		dbPath := ""
 		quiet := false
 		csvPath := ""
+		noColour := false
 
 		for i := 1; i < len(os.Args); i++ {
 			if os.Args[i] == "-d" && i+1 < len(os.Args) {
@@ -69,17 +70,22 @@ func main() {
 			if os.Args[i] == "--csv" && i+1 < len(os.Args) {
 				csvPath = os.Args[i+1]
 			}
+			if os.Args[i] == "--no-colour" {
+				noColour = true
+			}
 		}
-		return dbPath, quiet, csvPath
+		return dbPath, quiet, csvPath, noColour
 	}
 
 	printUsage := func() {
 		fmt.Println("        d               Directory to recursively process. This is required.")
 		fmt.Println("        q               Don't output all key/value pairs to console. Default will output all key/value pairs")
 		fmt.Println("        csv             Directory to save CSV formatted results to. Be sure to include the full path in double quotes")
+		fmt.Println("        no-colour       Don't colourise output")
 		fmt.Println()
 		fmt.Println("Examples: LevelDBParser.exe -d \"C:\\Temp\\leveldb\"")
 		fmt.Println("          LevelDBParser.exe -d \"C:\\Temp\\leveldb\" --csv \"C:\\Temp\" -q")
+		fmt.Println("          LevelDBParser.exe -d \"C:\\Temp\\leveldb\" --no-colour --csv \"C:\\Temp\"")
 		fmt.Println()
 		fmt.Println("          Short options (single letter) are prefixed with a single dash. Long commands are prefixed with two dashes")
 		fmt.Println()
@@ -96,7 +102,7 @@ func main() {
 		return true, err
 	}
 
-	rootPath, quiet, csvPath := getArgs()
+	rootPath, quiet, csvPath, _ := getArgs()
 
 	if rootPath == "" {
 		printUsage()

@@ -1,0 +1,33 @@
+language: go
+
+os:
+  - linux
+
+go:
+  - 1.15.x
+
+# deploy:
+#   provider: releases
+#   api_key:
+#     secure: YOUR_API_KEY_ENCRYPTED
+#   file:
+#     - "LevelDBDumper"
+#     - "LevelDBDumper.app"
+#     - "LevelDBDumper.exe"
+#     - "LevelDBDumper_x86.exe"
+#   skip_cleanup: true
+#   on:
+#     tags: true
+
+before_install:
+  - go get github.com/syndtr/goleveldb/leveldb
+
+script:
+  - export GOOS="linux"
+  - go build -o LevelDBDumper
+  - export GOOS="darwin"
+  - go build -o LevelDBDumper.app
+  - export GOOS="windows"
+  - go build -o LevelDBDumper.exe
+  - export GOARCH="386"
+  - go build -o LevelDBDumper_x86.exe
