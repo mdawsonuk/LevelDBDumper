@@ -13,13 +13,12 @@ git:
 
 deploy:
   provider: releases
-  api_key: $GITHUB_TOKEN
+  token: $GITHUB_TOKEN
   file:
     - "LevelDBDumper"
     - "LevelDBDumper.app.zip"
     - "LevelDBDumper.exe"
     - "LevelDBDumper_x86.exe"
-  skip_cleanup: true
   draft: true
   name: "LevelDB Dumper $TRAVIS_TAG"
   on:
