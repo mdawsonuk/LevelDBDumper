@@ -75,11 +75,15 @@ func main() {
 		return true, err
 	}
 
-	rootPath, quiet, csvPath, _ := getArgs(os.Args)
+	rootPath, quiet, csvPath, noColour := getArgs(os.Args)
 
 	if rootPath == "" {
 		printUsage()
-		fmt.Println(Fatal("Missing -d argument"))
+		if noColour {
+			fmt.Println("Missing -d argument")
+		} else {
+			fmt.Println(Fatal("Missing -d argument"))
+		}
 		fmt.Println()
 		return
 	}
@@ -90,14 +94,21 @@ func main() {
 	dbPresent, _ := fileExists(rootPath)
 
 	if !dbPresent {
-		fmt.Println(Fatal("The DB path ", rootPath, " doesn't exist"))
-		printUsage()
+		if noColour {
+			fmt.Println("The DB path ", rootPath, " doesn't exist")
+		} else {
+			fmt.Println(Fatal("The DB path", rootPath, "doesn't exist"))
+		}
 		return
 	}
 
 	testFile, err := os.Open(rootPath)
 	if err != nil {
-		fmt.Println(Warn("Unable to open ", rootPath, " - make sure you haven't escaped the path with \\\""))
+		if noColour {
+			fmt.Println("Unable to open", rootPath, "- make sure you haven't escaped the path with \\\"")
+		} else {
+			fmt.Println(Warn("Unable to open ", rootPath, " - make sure you haven't escaped the path with \\\""))
+		}
 		return
 	}
 	defer testFile.Close()
@@ -109,14 +120,24 @@ func main() {
 	}
 	elapsed := time.Now().Sub(start)
 	if len(searchResult) > 0 {
-		fmt.Println(Warn(len(searchResult), " LevelDB databases found"))
-		fmt.Println(Info("Searching for LevelDB databases from ", rootPath, " took ", elapsed))
+		if noColour {
+			fmt.Println(len(searchResult), "LevelDB databases found")
+			fmt.Println("Searching for LevelDB databases from", rootPath, "took", elapsed)
+		} else {
+			fmt.Println(Warn(len(searchResult), " LevelDB databases found"))
+			fmt.Println(Info("Searching for LevelDB databases from ", rootPath, " took ", elapsed))
+		}
 		fmt.Println()
 		for _, v := range searchResult {
-			openDb(v, quiet, csvPath)
+			openDb(v, quiet, csvPath, noColour)
 		}
 	} else {
-		fmt.Println(Fatal("0 LevelDB databases found"))
+		if noColour {
+			fmt.Println("0 LevelDB databases found")
+		} else {
+			fmt.Println(Fatal("0 LevelDB databases found"))
+		}
+
 		fmt.Println()
 	}
 }
@@ -131,7 +152,7 @@ func getArgs(args []string) (string, bool, string, bool) {
 		if args[i] == "-d" && i+1 < len(args) {
 			path, err := filepath.Abs(args[i+1])
 			if err != nil {
-				fmt.Println(Fatal("Unable to get absolute path of ", path))
+				fmt.Println(Fatal("Unable to get absolute path of", path))
 			} else {
 				dbPath = path
 			}
@@ -178,9 +199,13 @@ func findFile(path string, fileInfo os.FileInfo, err error) error {
 	return nil
 }
 
-func openDb(dbPath string, quiet bool, csvPath string) {
+func openDb(dbPath string, quiet bool, csvPath string, noColour bool) {
 
-	fmt.Println(Info("Opening DB at ", dbPath))
+	if noColour {
+		fmt.Println("Opening DB at", dbPath)
+	} else {
+		fmt.Println(Info("Opening DB at ", dbPath))
+	}
 
 	options := &opt.Options{
 		ErrorIfMissing: true,
@@ -191,7 +216,11 @@ func openDb(dbPath string, quiet bool, csvPath string) {
 	db, err := leveldb.OpenFile(dbPath, options)
 
 	if err != nil {
-		fmt.Println(Fatal("Could not open DB at ", dbPath))
+		if noColour {
+			fmt.Println("Could not open DB at", dbPath)
+		} else {
+			fmt.Println(Fatal("Could not open DB at ", dbPath))
+		}
 		fmt.Println()
 		return
 	}
@@ -202,7 +231,12 @@ func openDb(dbPath string, quiet bool, csvPath string) {
 	iter := db.NewIterator(nil, nil)
 
 	if !quiet {
-		fmt.Println(Info(fmt.Sprintf("%-56vValue:", "Key:")))
+		if noColour {
+			fmt.Println(fmt.Sprintf("%-56vValue:", "Key:"))
+		} else {
+			fmt.Println(Info(fmt.Sprintf("%-56vValue:", "Key:")))
+		}
+
 	}
 
 	var data = [][]string{}
@@ -223,9 +257,18 @@ func openDb(dbPath string, quiet bool, csvPath string) {
 
 		if !quiet {
 			if len(escapedValue) > 80 {
-				fmt.Printf("%-64v | "+escapedValue[:80]+"...\n", Warn(escapedKey))
+				if noColour {
+					fmt.Printf("%-53v | "+escapedValue[:80]+"...\n", escapedKey)
+				} else {
+					fmt.Printf("%-64v | "+escapedValue[:80]+"...\n", Warn(escapedKey))
+				}
 			} else {
-				fmt.Printf("%-64v | "+escapedValue+"\n", Warn(escapedKey))
+				if noColour {
+					fmt.Printf("%-53v | "+escapedValue+"\n", escapedKey)
+				} else {
+					fmt.Printf("%-64v | "+escapedValue+"\n", Warn(escapedKey))
+				}
+
 			}
 		}
 
@@ -251,7 +294,11 @@ func openDb(dbPath string, quiet bool, csvPath string) {
 				csvWriter.Flush()
 			}
 		} else {
-			fmt.Println(Warn("Parsed database at ", dbPath, " but no key/value pairs were found"))
+			if noColour {
+				fmt.Println("Parsed database at", dbPath, "but no key/value pairs were found")
+			} else {
+				fmt.Println(Warn("Parsed database at ", dbPath, " but no key/value pairs were found"))
+			}
 		}
 	}
 
@@ -263,7 +310,11 @@ func openDb(dbPath string, quiet bool, csvPath string) {
 	}
 
 	elapsed := time.Now().Sub(start)
-	fmt.Println(Info("Dumping LevelDB database at ", dbPath, " took ", elapsed))
+	if noColour {
+		fmt.Println("Dumping LevelDB database at", dbPath, "took", elapsed)
+	} else {
+		fmt.Println(Info("Dumping LevelDB database at ", dbPath, " took ", elapsed))
+	}
 	fmt.Println()
 }
 
