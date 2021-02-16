@@ -4,8 +4,10 @@ import (
 	"encoding/csv"
 	"fmt"
 	"os"
+	"os/signal"
 	"path/filepath"
 	"strings"
+	"syscall"
 	"time"
 	"unicode"
 
@@ -76,6 +78,19 @@ func main() {
 	}
 
 	rootPath, quiet, csvPath, noColour := getArgs(os.Args)
+
+	c := make(chan os.Signal)
+	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
+	go func() {
+		<-c
+		if noColour {
+			fmt.Println("Ctrl+C detected, quitting...")
+		} else {
+			fmt.Println(Fatal("Ctrl+C detected, quitting..."))
+		}
+		os.Exit(0)
+
+	}()
 
 	if rootPath == "" {
 		printUsage()
