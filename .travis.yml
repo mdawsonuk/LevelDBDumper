@@ -6,9 +6,9 @@ os:
 dist: bionic
 
 go:
+  - 1.16.x
   - 1.15.x
   - 1.14.x
-  - 1.13.x
   
 git:
     quiet: true
@@ -24,10 +24,11 @@ deploy:
   draft: true
   name: "LevelDB Dumper $TRAVIS_TAG"
   on:
+    go: 1.16.x
+    os: linux
     tags: true
 
 before_install:
-  - sudo apt install zip -f -y
   - go get github.com/syndtr/goleveldb/leveldb
 
 script:

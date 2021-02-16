@@ -44,6 +44,13 @@ var (
 	searchResult []string
 )
 
+var (
+	rootPath string
+	quiet    bool
+	csvPath  string
+	noColour bool
+)
+
 func main() {
 
 	fmt.Println()
@@ -51,20 +58,6 @@ func main() {
 	fmt.Println()
 	fmt.Println("Author: Matt Dawson")
 	fmt.Println()
-
-	printUsage := func() {
-		fmt.Println("        d               Directory to recursively process. This is required.")
-		fmt.Println("        q               Don't output all key/value pairs to console. Default will output all key/value pairs")
-		fmt.Println("        csv             Directory to save CSV formatted results to. Be sure to include the full path in double quotes")
-		fmt.Println("        no-colour       Don't colourise output")
-		fmt.Println()
-		fmt.Println("Examples: LevelDBParser.exe -d \"C:\\Temp\\leveldb\"")
-		fmt.Println("          LevelDBParser.exe -d \"C:\\Temp\\leveldb\" --csv \"C:\\Temp\" -q")
-		fmt.Println("          LevelDBParser.exe -d \"C:\\Temp\\leveldb\" --no-colour --csv \"C:\\Temp\"")
-		fmt.Println()
-		fmt.Println("          Short options (single letter) are prefixed with a single dash. Long commands are prefixed with two dashes")
-		fmt.Println()
-	}
 
 	fileExists := func(path string) (bool, error) {
 		_, err := os.Stat(path)
@@ -77,19 +70,20 @@ func main() {
 		return true, err
 	}
 
-	rootPath, quiet, csvPath, noColour := getArgs(os.Args)
+	rootPath, quiet, csvPath, noColour = getArgs(os.Args)
 
 	c := make(chan os.Signal)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 	go func() {
 		<-c
 		if noColour {
+			fmt.Println("Found", len(searchResult), "results so far")
 			fmt.Println("Ctrl+C detected, quitting...")
 		} else {
+			fmt.Println(Info("Found ", len(searchResult), " results so far"))
 			fmt.Println(Fatal("Ctrl+C detected, quitting..."))
 		}
 		os.Exit(0)
-
 	}()
 
 	if rootPath == "" {
@@ -157,6 +151,24 @@ func main() {
 	}
 }
 
+func printUsage() {
+	fmt.Println("      h/help              Display this help message.")
+	fmt.Println("      d/dir               Directory to recursively process. This is required.")
+	fmt.Println("      q/quiet             Don't output all key/value pairs to console. Default will output all key/value pairs")
+	fmt.Println("      o/output            Output type. Can be \"csv\", \"text\" or \"json\"")
+	fmt.Println("      outputDir           Directory to save all output results to. Defaults to current directory")
+	fmt.Println("      f/outputFile        Filename to use when saving output. This will be appended with path and date")
+	fmt.Println("      b/batch             Combine all CSV output into one CSV file")
+	fmt.Println("      no-colour/no-color  Don't colourise output")
+	fmt.Println()
+	fmt.Println("Examples: LevelDBParser.exe -d \"C:\\Temp\\leveldb\"")
+	fmt.Println("          LevelDBParser.exe -d \"C:\\Temp\\leveldb\" --csv \"C:\\Temp\" -q")
+	fmt.Println("          LevelDBParser.exe -d \"C:\\Temp\\leveldb\" --no-colour --csv \"C:\\Temp\"")
+	fmt.Println()
+	fmt.Println("          Short options (single letter) are prefixed with a single dash. Long commands are prefixed with two dashes")
+	fmt.Println()
+}
+
 func getArgs(args []string) (string, bool, string, bool) {
 	dbPath := ""
 	quiet := false
@@ -187,7 +199,13 @@ func getArgs(args []string) (string, bool, string, bool) {
 
 func findFile(path string, fileInfo os.FileInfo, err error) error {
 	if err != nil {
-		fmt.Println(Warn("Access denied for ", path))
+		if !quiet {
+			if noColour {
+				fmt.Println("Access denied for", path)
+			} else {
+				fmt.Println(Warn("Access denied for ", path))
+			}
+		}
 		return nil
 	}
 
@@ -206,6 +224,13 @@ func findFile(path string, fileInfo os.FileInfo, err error) error {
 			checkError(err)
 			if len(files) > 0 {
 				searchResult = append(searchResult, absolute)
+				if !quiet {
+					if noColour {
+						fmt.Println("Found database at", absolute)
+					} else {
+						fmt.Println(Info("Found database at ", absolute))
+					}
+				}
 			}
 		}
 		return nil
@@ -219,7 +244,7 @@ func openDb(dbPath string, quiet bool, csvPath string, noColour bool) {
 	if noColour {
 		fmt.Println("Opening DB at", dbPath)
 	} else {
-		fmt.Println(Info("Opening DB at ", dbPath))
+		fmt.Println(Info("Opening DB at ", Warn(dbPath)))
 	}
 
 	options := &opt.Options{
@@ -232,9 +257,9 @@ func openDb(dbPath string, quiet bool, csvPath string, noColour bool) {
 
 	if err != nil {
 		if noColour {
-			fmt.Println("Could not open DB at", dbPath)
+			fmt.Println("Could not open DB at", dbPath, "- perhaps this DB is in use?")
 		} else {
-			fmt.Println(Fatal("Could not open DB at ", dbPath))
+			fmt.Println(Fatal("Could not open DB at ", dbPath, " - perhaps this DB is in use?"))
 		}
 		fmt.Println()
 		return
@@ -326,9 +351,9 @@ func openDb(dbPath string, quiet bool, csvPath string, noColour bool) {
 
 	elapsed := time.Now().Sub(start)
 	if noColour {
-		fmt.Println("Dumping LevelDB database at", dbPath, "took", elapsed)
+		fmt.Println("Dumping LevelDB database took", elapsed)
 	} else {
-		fmt.Println(Info("Dumping LevelDB database at ", dbPath, " took ", elapsed))
+		fmt.Println(Info("Dumping LevelDB database took ", elapsed))
 	}
 	fmt.Println()
 }
