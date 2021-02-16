@@ -14,9 +14,9 @@ import (
 )
 
 var (
-	Info = Teal
-	Warn = Yellow
-	Fata = Red
+	Info  = Teal
+	Warn  = Yellow
+	Fatal = Red
 )
 
 var (
@@ -50,33 +50,6 @@ func main() {
 	fmt.Println("Author: Matt Dawson")
 	fmt.Println()
 
-	getArgs := func() (string, bool, string, bool) {
-		dbPath := ""
-		quiet := false
-		csvPath := ""
-		noColour := false
-
-		for i := 1; i < len(os.Args); i++ {
-			if os.Args[i] == "-d" && i+1 < len(os.Args) {
-				path, err := filepath.Abs(os.Args[i+1])
-				if err != nil {
-					fmt.Println(Fata("Unable to get absolute path of ", path))
-				}
-				dbPath = path
-			}
-			if os.Args[i] == "-q" {
-				quiet = true
-			}
-			if os.Args[i] == "--csv" && i+1 < len(os.Args) {
-				csvPath = os.Args[i+1]
-			}
-			if os.Args[i] == "--no-colour" {
-				noColour = true
-			}
-		}
-		return dbPath, quiet, csvPath, noColour
-	}
-
 	printUsage := func() {
 		fmt.Println("        d               Directory to recursively process. This is required.")
 		fmt.Println("        q               Don't output all key/value pairs to console. Default will output all key/value pairs")
@@ -102,11 +75,11 @@ func main() {
 		return true, err
 	}
 
-	rootPath, quiet, csvPath, _ := getArgs()
+	rootPath, quiet, csvPath, _ := getArgs(os.Args)
 
 	if rootPath == "" {
 		printUsage()
-		fmt.Println(Fata("Missing -d argument"))
+		fmt.Println(Fatal("Missing -d argument"))
 		fmt.Println()
 		return
 	}
@@ -117,7 +90,7 @@ func main() {
 	dbPresent, _ := fileExists(rootPath)
 
 	if !dbPresent {
-		fmt.Println(Fata("The DB path ", rootPath, " doesn't exist"))
+		fmt.Println(Fatal("The DB path ", rootPath, " doesn't exist"))
 		printUsage()
 		return
 	}
@@ -143,9 +116,37 @@ func main() {
 			openDb(v, quiet, csvPath)
 		}
 	} else {
-		fmt.Println(Fata("0 LevelDB databases found"))
+		fmt.Println(Fatal("0 LevelDB databases found"))
 		fmt.Println()
 	}
+}
+
+func getArgs(args []string) (string, bool, string, bool) {
+	dbPath := ""
+	quiet := false
+	csvPath := ""
+	noColour := false
+
+	for i := 0; i < len(args); i++ {
+		if args[i] == "-d" && i+1 < len(args) {
+			path, err := filepath.Abs(args[i+1])
+			if err != nil {
+				fmt.Println(Fatal("Unable to get absolute path of ", path))
+			} else {
+				dbPath = path
+			}
+		}
+		if args[i] == "-q" {
+			quiet = true
+		}
+		if args[i] == "--csv" && i+1 < len(args) {
+			csvPath = args[i+1]
+		}
+		if args[i] == "--no-colour" {
+			noColour = true
+		}
+	}
+	return dbPath, quiet, csvPath, noColour
 }
 
 func findFile(path string, fileInfo os.FileInfo, err error) error {
@@ -190,7 +191,7 @@ func openDb(dbPath string, quiet bool, csvPath string) {
 	db, err := leveldb.OpenFile(dbPath, options)
 
 	if err != nil {
-		fmt.Println(Fata("Could not open DB at ", dbPath))
+		fmt.Println(Fatal("Could not open DB at ", dbPath))
 		fmt.Println()
 		return
 	}
@@ -217,8 +218,8 @@ func openDb(dbPath string, quiet bool, csvPath string) {
 		}
 		value := string(byteValue)
 
-		escapedKey := removeControlChars(keyName)
-		escapedValue := removeControlChars(value)
+		escapedKey := removeControlChars(keyName) //fmt.Sprintf("%q", keyName)
+		escapedValue := removeControlChars(value) //fmt.Sprintf("%q", value)
 
 		if !quiet {
 			if len(escapedValue) > 80 {
@@ -277,6 +278,6 @@ func removeControlChars(str string) string {
 
 func checkError(err error) {
 	if err != nil {
-		fmt.Println(Fata(err))
+		fmt.Println(Fatal(err))
 	}
 }

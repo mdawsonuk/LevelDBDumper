@@ -26,6 +26,7 @@ before_install:
 
 script:
   - cd src/LevelDBDumper
+  - go test
   - export GOOS="linux"
   - go build -o LevelDBDumper
   - export GOOS="darwin"
