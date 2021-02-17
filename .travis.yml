@@ -4,42 +4,64 @@ os:
   - linux
 
 dist: bionic
-
-go:
-  - 1.16.x
-  - 1.15.x
-  - 1.14.x
   
 git:
     quiet: true
 
-deploy:
-  provider: releases
-  token: $GITHUB_TOKEN
-  file:
-    - "LevelDBDumper"
-    - "LevelDBDumper.app.zip"
-    - "LevelDBDumper.exe"
-    - "LevelDBDumper_x86.exe"
-  draft: true
-  name: "LevelDB Dumper $TRAVIS_TAG"
-  on:
-    go: 1.16.x
-    os: linux
-    tags: true
+jobs:
+  include:
+    - stage: "Test"
+      name: "Test Go 1.16.x"
+      go: 1.16.x
+      script:
+      - cd src/LevelDBDumper
+      - go test
+    - stage: "Build"
+      name: "Go Build 1.16.x"
+      go: 1.16.x
+      script:
+      - cd src/LevelDBDumper
+      - go build
+    - stage: "Build"
+      name: "Go Build 1.15.x"
+      go: 1.15.x
+      script:
+      - cd src/LevelDBDumper
+      - go build
+    - stage: "Build"
+      name: "Go Build 1.14.x"
+      go: 1.14.x
+      script:
+      - cd src/LevelDBDumper
+      - go build
+    - stage: "Deploy"
+      name: "Deploy to GitHub"
+      go: 1.16.x
+      script:
+      - cd src/LevelDBDumper
+      - export GOOS="linux"
+      - go build -o LevelDBDumper
+      - export GOOS="darwin"
+      - go build -o LevelDBDumper.app
+      - export GOOS="windows"
+      - go build -o LevelDBDumper.exe
+      - export GOARCH="386"
+      - go build -o LevelDBDumper_x86.exe
+      - zip -q LevelDBDumper.app.zip LevelDBDumper.app
+      deploy:
+        provider: releases
+        token: $GITHUB_TOKEN
+        file:
+          - "LevelDBDumper"
+          - "LevelDBDumper.app.zip"
+          - "LevelDBDumper.exe"
+          - "LevelDBDumper_x86.exe"
+        draft: true
+        name: "LevelDB Dumper $TRAVIS_TAG"
+        on:
+          go: 1.16.x
+          os: linux
+          tags: true
 
 before_install:
   - go get github.com/syndtr/goleveldb/leveldb
-
-script:
-  - cd src/LevelDBDumper
-  - go test
-  - export GOOS="linux"
-  - go build -o LevelDBDumper
-  - export GOOS="darwin"
-  - go build -o LevelDBDumper.app
-  - export GOOS="windows"
-  - go build -o LevelDBDumper.exe
-  - export GOARCH="386"
-  - go build -o LevelDBDumper_x86.exe
-  - zip -q LevelDBDumper.app.zip LevelDBDumper.app
