@@ -32,14 +32,6 @@ var (
 	White   = Color("\033[1;37m%s\033[0m")
 )
 
-func Color(colorString string) func(...interface{}) string {
-	sprint := func(args ...interface{}) string {
-		return fmt.Sprintf(colorString,
-			fmt.Sprint(args...))
-	}
-	return sprint
-}
-
 var (
 	searchResult []string
 )
@@ -51,6 +43,14 @@ var (
 	noColour bool
 )
 
+func Color(colorString string) func(...interface{}) string {
+	sprint := func(args ...interface{}) string {
+		return fmt.Sprintf(colorString,
+			fmt.Sprint(args...))
+	}
+	return sprint
+}
+
 func main() {
 
 	fmt.Println()
@@ -58,17 +58,6 @@ func main() {
 	fmt.Println()
 	fmt.Println("Author: Matt Dawson")
 	fmt.Println()
-
-	fileExists := func(path string) (bool, error) {
-		_, err := os.Stat(path)
-		if err == nil {
-			return true, nil
-		}
-		if os.IsNotExist(err) {
-			return false, nil
-		}
-		return true, err
-	}
 
 	rootPath, quiet, csvPath, noColour = getArgs(os.Args)
 
@@ -93,7 +82,6 @@ func main() {
 		} else {
 			fmt.Println(Fatal("Missing -d argument"))
 		}
-		fmt.Println()
 		return
 	}
 
@@ -167,6 +155,17 @@ func printUsage() {
 	fmt.Println()
 	fmt.Println("          Short options (single letter) are prefixed with a single dash. Long commands are prefixed with two dashes")
 	fmt.Println()
+}
+
+func fileExists(path string) (bool, error) {
+	_, err := os.Stat(path)
+	if err == nil {
+		return true, nil
+	}
+	if os.IsNotExist(err) {
+		return false, nil
+	}
+	return true, err
 }
 
 func getArgs(args []string) (string, bool, string, bool) {
