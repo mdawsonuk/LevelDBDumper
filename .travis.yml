@@ -1,3 +1,5 @@
+# TODO: https://docs.travis-ci.com/user/multi-cpu-architectures/
+
 language: go
   
 git:
@@ -5,6 +7,11 @@ git:
 
 os: linux
 dist: bionic
+
+stages:
+  - Test
+  - name: Deploy
+    if: tags = true
 
 jobs:
   include:
