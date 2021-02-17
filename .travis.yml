@@ -3,14 +3,15 @@ language: go
 git:
     quiet: true
 
+os: linux
+dist: bionic
+
 jobs:
   include:
     - stage: "Test"
       name: "Tests (Linux Ubuntu 18.04, Go 1.16.x)"
       go: 1.16.x
       script: ./test.sh
-      os: linux
-      dist: bionic
     - stage: "Test"
       name: "Tests (Linux Ubuntu 18.04, Go 1.15.x)"
       go: 1.15.x
@@ -59,6 +60,7 @@ jobs:
     - stage: "Deploy"
       name: "Deploy to GitHub Releases"
       go: 1.16.x
+      dist: bionic
       script:
       - cd src/LevelDBDumper
       - export GOOS="linux"
@@ -84,6 +86,6 @@ jobs:
           tags: true
 
 before_install:
-  - chmod +x build.sh
+  - chmod +x ./build.sh
   - export GO111MODULE=auto
   - go get github.com/syndtr/goleveldb/leveldb
