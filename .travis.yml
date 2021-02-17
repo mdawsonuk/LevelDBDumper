@@ -1,9 +1,4 @@
 language: go
-
-os:
-  - linux
-
-dist: bionic
   
 git:
     quiet: true
@@ -11,29 +6,22 @@ git:
 jobs:
   include:
     - stage: "Test"
-      name: "Test Go 1.16.x"
+      name: "Tests (Linux Ubuntu 18.04)"
       go: 1.16.x
-      script:
-      - cd src/LevelDBDumper
-      - go test
-    - stage: "Build"
-      name: "Go Build 1.16.x"
+      script: test.sh
+      os: linux
+      dist: bionic
+    - stage: "Test"
+      name: "Tests (Windows)"
       go: 1.16.x
-      script:
-      - cd src/LevelDBDumper
-      - go build
-    - stage: "Build"
-      name: "Go Build 1.15.x"
-      go: 1.15.x
-      script:
-      - cd src/LevelDBDumper
-      - go build
-    - stage: "Build"
-      name: "Go Build 1.14.x"
-      go: 1.14.x
-      script:
-      - cd src/LevelDBDumper
-      - go build
+      script: test.sh
+      os: windows
+    - stage: "Test"
+      name: "Tests (Windows)"
+      go: 1.16.x
+      script: test.sh
+      os: osx
+
     - stage: "Deploy"
       name: "Deploy to GitHub"
       go: 1.16.x
