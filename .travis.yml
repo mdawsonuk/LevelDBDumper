@@ -3,12 +3,6 @@ language: go
 git:
     quiet: true
 
-matrix:
-  fast_finish: true
-
-before_install:
-  - go get github.com/syndtr/goleveldb/leveldb
-
 jobs:
   include:
     - stage: "Test"
@@ -88,3 +82,7 @@ jobs:
         name: "LevelDB Dumper $TRAVIS_TAG"
         on:
           tags: true
+
+before_install:
+  - export GO111MODULE=auto
+  - go get github.com/syndtr/goleveldb/leveldb
