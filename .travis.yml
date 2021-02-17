@@ -11,44 +11,53 @@ before_install:
 
 jobs:
   include:
-    - name: "Tests (Linux Ubuntu 18.04, Go 1.16.x)"
+    - stage: "Test"
+      name: "Tests (Linux Ubuntu 18.04, Go 1.16.x)"
       go: 1.16.x
       script: ./test.sh
       os: linux
       dist: bionic
-    - name: "Tests (Linux Ubuntu 18.04, Go 1.15.x)"
+    - stage: "Test"
+      name: "Tests (Linux Ubuntu 18.04, Go 1.15.x)"
       go: 1.15.x
       script: ./test.sh
       os: linux
       dist: bionic
-    - name: "Tests (Linux Ubuntu 18.04, Go 1.14.x)"
+    - stage: "Test"
+      name: "Tests (Linux Ubuntu 18.04, Go 1.14.x)"
       go: 1.14.x
       script: ./test.sh
       os: linux
       dist: bionic
 
-    - name: "Tests (Windows, Go 1.16.x)"
+    - stage: "Test"
+      name: "Tests (Windows, Go 1.16.x)"
       go: 1.16.x
       script: ./test.sh
       os: windows
-    - name: "Tests (Windows, Go 1.15.x)"
+    - stage: "Test"
+      name: "Tests (Windows, Go 1.15.x)"
       go: 1.15.x
       script: ./test.sh
       os: windows
-    - name: "Tests (Windows, Go 1.14.x)"
+    - stage: "Test"
+      name: "Tests (Windows, Go 1.14.x)"
       go: 1.14.x
       script: ./test.sh
       os: windows
 
-    - name: "Tests (OS X, Go 1.16.x)"
+    - stage: "Test"
+      name: "Tests (OS X, Go 1.16.x)"
       go: 1.16.x
       script: ./test.sh
       os: osx
-    - name: "Tests (OS X, Go 1.15.x)"
+    - stage: "Test"
+      name: "Tests (OS X, Go 1.15.x)"
       go: 1.15.x
       script: ./test.sh
       os: osx
-    - name: "Tests (OS X, Go 1.14.x)"
+    - stage: "Test"
+      name: "Tests (OS X, Go 1.14.x)"
       go: 1.14.x
       script: ./test.sh
       os: osx
