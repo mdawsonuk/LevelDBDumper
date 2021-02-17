@@ -1,5 +1,4 @@
 language: go
-go: 1.16.x
   
 git:
     quiet: true
@@ -13,6 +12,7 @@ before_install:
 jobs:
   include:
     - name: "Tests (Linux Ubuntu 18.04, Go 1.16.x)"
+      go: 1.16.x
       script: ./test.sh
       os: linux
       dist: bionic
@@ -28,6 +28,7 @@ jobs:
       dist: bionic
 
     - name: "Tests (Windows, Go 1.16.x)"
+      go: 1.16.x
       script: ./test.sh
       os: windows
     - name: "Tests (Windows, Go 1.15.x)"
@@ -40,6 +41,7 @@ jobs:
       os: windows
 
     - name: "Tests (OS X, Go 1.16.x)"
+      go: 1.16.x
       script: ./test.sh
       os: osx
     - name: "Tests (OS X, Go 1.15.x)"
@@ -53,6 +55,7 @@ jobs:
 
     - stage: "Deploy"
       name: "Deploy to GitHub Releases"
+      go: 1.16.x
       script:
       - cd src/LevelDBDumper
       - export GOOS="linux"
