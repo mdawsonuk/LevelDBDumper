@@ -84,5 +84,6 @@ jobs:
           tags: true
 
 before_install:
+  - chmod +x build.sh
   - export GO111MODULE=auto
   - go get github.com/syndtr/goleveldb/leveldb
