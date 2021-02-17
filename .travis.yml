@@ -12,47 +12,35 @@ jobs:
       name: "Tests (Linux Ubuntu 18.04, Go 1.16.x)"
       go: 1.16.x
       script: ./test.sh
-    - stage: "Test"
-      name: "Tests (Linux Ubuntu 18.04, Go 1.15.x)"
+    - name: "Tests (Linux Ubuntu 18.04, Go 1.15.x)"
       go: 1.15.x
       script: ./test.sh
-      os: linux
-      dist: bionic
-    - stage: "Test"
-      name: "Tests (Linux Ubuntu 18.04, Go 1.14.x)"
+    - name: "Tests (Linux Ubuntu 18.04, Go 1.14.x)"
       go: 1.14.x
       script: ./test.sh
-      os: linux
-      dist: bionic
 
-    - stage: "Test"
-      name: "Tests (Windows, Go 1.16.x)"
+    - name: "Tests (Windows, Go 1.16.x)"
       go: 1.16.x
       script: ./test.sh
       os: windows
-    - stage: "Test"
-      name: "Tests (Windows, Go 1.15.x)"
+    - name: "Tests (Windows, Go 1.15.x)"
       go: 1.15.x
       script: ./test.sh
       os: windows
-    - stage: "Test"
-      name: "Tests (Windows, Go 1.14.x)"
+    - name: "Tests (Windows, Go 1.14.x)"
       go: 1.14.x
       script: ./test.sh
       os: windows
 
-    - stage: "Test"
-      name: "Tests (OS X, Go 1.16.x)"
+    - name: "Tests (OS X, Go 1.16.x)"
       go: 1.16.x
       script: ./test.sh
       os: osx
-    - stage: "Test"
-      name: "Tests (OS X, Go 1.15.x)"
+    - name: "Tests (OS X, Go 1.15.x)"
       go: 1.15.x
       script: ./test.sh
       os: osx
-    - stage: "Test"
-      name: "Tests (OS X, Go 1.14.x)"
+    - name: "Tests (OS X, Go 1.14.x)"
       go: 1.14.x
       script: ./test.sh
       os: osx
@@ -60,18 +48,7 @@ jobs:
     - stage: "Deploy"
       name: "Deploy to GitHub Releases"
       go: 1.16.x
-      dist: bionic
-      script:
-      - cd src/LevelDBDumper
-      - export GOOS="linux"
-      - go build -o LevelDBDumper
-      - export GOOS="darwin"
-      - go build -o LevelDBDumper.app
-      - export GOOS="windows"
-      - go build -o LevelDBDumper.exe
-      - export GOARCH="386"
-      - go build -o LevelDBDumper_x86.exe
-      - zip -q LevelDBDumper.app.zip LevelDBDumper.app
+      script: ./deploy.sh
       deploy:
         provider: releases
         token: $GITHUB_TOKEN
@@ -86,6 +63,7 @@ jobs:
           tags: true
 
 before_install:
-  - chmod +x ./build.sh
+  - chmod +x ./test.sh
+  - chmod +x ./deploy.sh
   - export GO111MODULE=auto
   - go get github.com/syndtr/goleveldb/leveldb
