@@ -52,7 +52,8 @@ func TestSearchForDBsTopLevel(t *testing.T) {
 }
 
 func TestSearchForDBsTopLevelAndSubDir(t *testing.T) {
-	os.MkdirAll("Discord\\Local Storage\\leveldb", os.ModePerm)
+	outputDir, _ = filepath.Abs(".")
+	os.MkdirAll(filepath.Join(outputDir, "Discord\\Local Storage\\leveldb"), os.ModePerm)
 
 	currentFile, _ := os.Create("CURRENT")
 	currentFile.Close()
