@@ -1,2 +1,2 @@
 cd src/LevelDBDumper
-go test -v -coverage -count=1
+go test -v -cover -count=1
