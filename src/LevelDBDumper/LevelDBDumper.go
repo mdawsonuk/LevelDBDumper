@@ -121,6 +121,10 @@ func printUsage() {
 }
 
 func main() {
+	dumpDBs(os.Args)
+}
+
+func dumpDBs(args []string) {
 
 	fmt.Println()
 	fmt.Println("LevelDB Dumper 2.0.2")
@@ -128,7 +132,7 @@ func main() {
 	fmt.Println("Author: Matt Dawson")
 	fmt.Println()
 
-	getArgs(os.Args)
+	getArgs(args)
 
 	if help {
 		printUsage()
@@ -149,7 +153,7 @@ func main() {
 		os.Exit(0)
 	}()
 
-	fmt.Println("Command Line:", strings.Join(os.Args[1:], " "))
+	fmt.Println("Command Line:", strings.Join(args[1:], " "))
 	fmt.Println()
 
 	if rootPath == "" {
