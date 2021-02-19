@@ -60,6 +60,7 @@ A massive thanks to Harsh Vardhan Singh and his [repo](https://github.com/harshv
 * Batch CSV file (All LevelDB dumps into one file)
 * JSON export
 * Text export
+* Allow suppression of warning/error messages e.g. `2>/dev/null`
 
 ## Usage
 
