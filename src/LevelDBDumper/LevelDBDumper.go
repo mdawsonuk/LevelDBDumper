@@ -207,6 +207,8 @@ func main() {
 }
 
 func searchForDBs() {
+	searchResult = []string{}
+
 	start := time.Now()
 	err := filepath.Walk(rootPath, findFile)
 	if err != nil {
@@ -382,22 +384,7 @@ func openDb(dbPath string) {
 
 	if outputDir != "" {
 		if len(data) > 0 {
-			timeNow := time.Now()
-			year, month, day := timeNow.Date()
-			escapedPath := strings.ReplaceAll(strings.ReplaceAll(strings.ReplaceAll(dbPath, "/", "_"), "\\", "_"), ":", "")
-			csvFileName := fmt.Sprintf("%v%v%v%v%v%v_%v_LevelDBDumper.csv", year, int(month), day, timeNow.Hour(), timeNow.Minute(), timeNow.Second(), escapedPath)
-			file, err := os.Create(filepath.Join(outputDir, csvFileName))
-			checkError(err)
-			defer file.Close()
-
-			csvWriter := csv.NewWriter(file)
-			csvWriter.Write([]string{"Key", "Value"})
-
-			for _, value := range data {
-				err := csvWriter.Write(value)
-				checkError(err)
-				csvWriter.Flush()
-			}
+			createCsvOutput(dbPath, data)
 		}
 	}
 
@@ -415,6 +402,25 @@ func openDb(dbPath string) {
 		fmt.Println(Info("Dumping LevelDB database took ", elapsed))
 	}
 	fmt.Println()
+}
+
+func createCsvOutput(dbPath string, data [][]string) {
+	timeNow := time.Now()
+	year, month, day := timeNow.Date()
+	escapedPath := strings.ReplaceAll(strings.ReplaceAll(strings.ReplaceAll(dbPath, "/", "_"), "\\", "_"), ":", "")
+	csvFileName := fmt.Sprintf("%v%v%v%v%v%v_%v_LevelDBDumper.csv", year, int(month), day, timeNow.Hour(), timeNow.Minute(), timeNow.Second(), escapedPath)
+	file, err := os.Create(filepath.Join(outputDir, csvFileName))
+	checkError(err)
+	defer file.Close()
+
+	csvWriter := csv.NewWriter(file)
+	csvWriter.Write([]string{"Key", "Value"})
+
+	for _, value := range data {
+		err := csvWriter.Write(value)
+		checkError(err)
+		csvWriter.Flush()
+	}
 }
 
 func removeControlChars(str string) string {
