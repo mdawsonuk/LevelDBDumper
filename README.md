@@ -32,6 +32,7 @@
 * [About the Project](#about-the-project)
 * [TODO](#todo)
 * [Usage](#usage)
+* [Supported Applications](#supported-applications)
 * [Getting Started](#getting-started)
   * [Prerequisites](#prerequisites)
   * [Installation](#installation)
@@ -65,29 +66,44 @@ A massive thanks to Harsh Vardhan Singh and his [repo](https://github.com/harshv
 ## Usage
 
 ```
-LevelDB Dumper 2.0.2
+LevelDB Dumper 3.0.0-alpha
 
 Author: Matt Dawson
 
-        d               Directory to recursively process. This is required.
-        q               Don't output all key/value pairs to console. Default will output all key/value pairs
-        csv             Directory to save CSV formatted results to. Be sure to include the full path in double quotes
-        no-colour       Don't colourise output
+      h/help              Display this help message.
+      d/dir               Directory to recursively process. This is required.
+      q/quiet             Don't output all key/value pairs to console. Default will output all key/value pairs
+      t/outputType        Output type. Can be "csv", "text" or "json". JSON and text coming soon
+      o/outputDir         Directory to save all output results to. Required for any file output
+      f/outputFile        Filename to use when saving output. This will be appended with path and date
+      b/batch             Combine all output files into one file. Supported by "csv" and "json" file types
+      no-colour/no-color  Don't colourise output
+
+Short options (single letter) are prefixed with a single dash. Long commands are prefixed with two dashes
 
 Examples: LevelDBParser.exe -d "C:\Temp\leveldb"
-          LevelDBParser.exe -d "C:\Temp\leveldb" --csv "C:\Temp" -q
-          LevelDBParser.exe -d "C:\Temp\leveldb" --no-colour --csv "C:\Temp"
-
-          Short options (single letter) are prefixed with a single dash. Long commands are prefixed with two dashes
+          LevelDBParser.exe -d "C:\Temp\leveldb" -o "C:\Temp" -q
+          LevelDBParser.exe -d "C:\Temp\leveldb" --no-colour --quiet
+          LevelDBParser.exe -d "C:\Temp\leveldb" --no-colour -b --outputType json -outputFile Evidence.json
+          LevelDBParser.exe -d "C:\Temp\leveldb" -t csv -f LevelDB.csv -o Evidence -b --no-colour --quiet
 ```
 
-LevelDB Dumper will search recursively from the directory passed to it for LevelDB databases. Upon finding one, it will be queued for dumping. Once it has searched the entire drive, the databases will be enumerated from the saved list and dumped to the console.
+LevelDB Dumper will search recursively from the directory passed to it for LevelDB databases. Upon finding one, it will be queued for dumping. Once it has searched the entire drive, the databases will be enumerated from the item list. By default, the Key/Value pairs are output to the console.
 
-It is recommended to specify an output file for dumping. Using `--csv <Directory>` will output a CSV file per LevelDB database found, containing the timestamp of dumping and path to the LevelDB database.
+It is recommended to specify an output file for dumping. Using `-o <Directory>` will output a file per LevelDB database found, with the file name containing the timestamp of dumping and path to the LevelDB database. The default format is CSV
 
-It is worth noting that all Unicode control characters/non-graphics characters are stripped from the output strings but are retained for output files, such as CSV. For applications such as Discord, where null terminators are found in Key names, this is used to improve output formatting.
+It is worth noting that all Unicode control characters/non-graphics characters are stripped from the output strings but are retained for file output, such as CSV. For applications such as Discord, where null terminators are found in Key names, this is used to improve output formatting.
 
 There have been issues with Windows 10 where the program is opened in a new window instead of the current Command Line window instance, meaning that the output is not visible. A work-around for this appears to be running the Command Prompt/Powershell as Administrator. However, for analysis of output, the key/value pairs should be output to a file rather than redirecting or analysing through the command line window.
+
+## Supported Applications
+
+LevelDB Dumper has been tested to work on the following applications and provide the following forensics artifacts:
+
+* [Discord](https://discord.com/) - User email, User token, Recent games, Search history, Draft messages, Collapsed categories/channels, User settings, GIF favourites
+* [WhatsApp](https://www.whatsapp.com/) - User name, mobile phone type
+
+_This works on Local Storage LevelDBs - support for IndexedDBs using the idb_cmp1 comparator is coming soon, which will enable support for applications such as Skype, Microsoft Teams, and more_
 
 ## Getting Started
 

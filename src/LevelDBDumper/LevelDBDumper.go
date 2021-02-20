@@ -104,8 +104,8 @@ func printUsage() {
 	fmt.Println("      h/help              Display this help message.")
 	fmt.Println("      d/dir               Directory to recursively process. This is required.")
 	fmt.Println("      q/quiet             Don't output all key/value pairs to console. Default will output all key/value pairs")
-	fmt.Println("      t/outputType        Output type. Can be \"csv\", \"text\" or \"json\". JSON and text coming soon...")
-	fmt.Println("      outputDir           Directory to save all output results to")
+	fmt.Println("      t/outputType        Output type. Can be \"csv\", \"text\" or \"json\". JSON and text coming soon")
+	fmt.Println("      o/outputDir         Directory to save all output results to. Required for any file output")
 	fmt.Println("      f/outputFile        Filename to use when saving output. This will be appended with path and date")
 	fmt.Println("      b/batch             Combine all output files into one file. Supported by \"csv\" and \"json\" file types")
 	fmt.Println("      no-colour/no-color  Don't colourise output")
@@ -113,10 +113,10 @@ func printUsage() {
 	fmt.Println("Short options (single letter) are prefixed with a single dash. Long commands are prefixed with two dashes")
 	fmt.Println()
 	fmt.Println("Examples: LevelDBParser.exe -d \"C:\\Temp\\leveldb\"")
-	fmt.Println("          LevelDBParser.exe -d \"C:\\Temp\\leveldb\" --outputDir \"C:\\Temp\" -q")
+	fmt.Println("          LevelDBParser.exe -d \"C:\\Temp\\leveldb\" -o \"C:\\Temp\" -q")
 	fmt.Println("          LevelDBParser.exe -d \"C:\\Temp\\leveldb\" --no-colour --quiet")
-	fmt.Println("          LevelDBParser.exe -d \"C:\\Temp\\leveldb\" --no-colour -b --output json -f Evidence.json")
-	fmt.Println("          LevelDBParser.exe -d \"C:\\Temp\\leveldb\" -o csv -f Evidence.csv -b --no-colour --quiet")
+	fmt.Println("          LevelDBParser.exe -d \"C:\\Temp\\leveldb\" --no-colour -b --outputType json -outputFile Evidence.json")
+	fmt.Println("          LevelDBParser.exe -d \"C:\\Temp\\leveldb\" -t csv -f LevelDB.csv -o Evidence -b --no-colour --quiet")
 	fmt.Println()
 }
 
@@ -127,7 +127,7 @@ func main() {
 func dumpDBs(args []string) {
 
 	fmt.Println()
-	fmt.Println("LevelDB Dumper 2.0.2")
+	fmt.Println("LevelDB Dumper 3.0.0-alpha")
 	fmt.Println()
 	fmt.Println("Author: Matt Dawson")
 	fmt.Println()
@@ -314,6 +314,16 @@ func openDb(dbPath string) {
 		ErrorIfMissing: true,
 	}
 
+	// TODO: Instead of checking path, open MANIFEST-XXXX file and read string value
+	if strings.Contains(dbPath, "\\IndexedDB\\") || strings.Contains(dbPath, "/IndexedDB/") {
+		if noColour {
+			fmt.Println("IndexedDB idb_cmp1 comparator not yet implemented, results will not be valid")
+		} else {
+			fmt.Println(Warn("IndexedDB idb_cmp1 comparator not yet implemented, results will not be valid"))
+		}
+		options.Comparer = idbCmp1{}
+	}
+
 	start := time.Now()
 
 	db, err := leveldb.OpenFile(dbPath, options)
@@ -350,6 +360,7 @@ func openDb(dbPath string) {
 		byteValue, err := db.Get([]byte(key), nil)
 		if err != nil {
 			fmt.Println("Error reading Key: " + keyName)
+			fmt.Println(err.Error())
 			return
 		}
 		value := string(byteValue)
