@@ -13,7 +13,6 @@ import (
 
 	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/syndtr/goleveldb/leveldb/opt"
-	"golang.org/x/sys/windows"
 )
 
 var (
@@ -357,6 +356,7 @@ func openDb(dbPath string) {
 	}
 
 	if outputDir != "" {
+		// When batching, timestamp column should use time.Now().Unix()
 		if len(data) > 0 {
 			createCsvOutput(dbPath, data)
 		}
@@ -406,32 +406,6 @@ func checkError(err error) {
 	if err != nil {
 		fmt.Println(Fatal(err))
 	}
-}
-
-func isAdmin() bool {
-	euid := os.Geteuid()
-	if euid == 0 {
-		return true
-	} else if euid == -1 {
-		// euid returns -1 on Windows
-		var sid *windows.SID
-
-		err := windows.AllocateAndInitializeSid(&windows.SECURITY_NT_AUTHORITY, 2, windows.SECURITY_BUILTIN_DOMAIN_RID, windows.DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0, &sid)
-		if err != nil {
-			printLine(fmt.Sprintf("SID Error: %s", err), Fatal)
-			return false
-		}
-
-		token := windows.Token(0)
-
-		member, err := token.IsMember(sid)
-		if err != nil {
-			printLine(fmt.Sprintf("Token Membership Error: %s", err), Fatal)
-			return false
-		}
-		return member
-	}
-	return false
 }
 
 type format func(...interface{}) string
