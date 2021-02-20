@@ -55,7 +55,8 @@ A massive thanks to Harsh Vardhan Singh and his [repo](https://github.com/harshv
 * ~~Display coloured Key/Value for non-quiet mode~~ :heavy_check_mark:
 * ~~Ignore processing empty LevelDB databases to avoid creating empty output files~~ :heavy_check_mark:
 * ~~Travis CI builds for Windows and Linux~~ :heavy_check_mark:
-* ~~Allow toggling of outputcolouring~~ :heavy_check_mark:
+* ~~Allow toggling of output colouring~~ :heavy_check_mark:
+* Implement idb_cmp1 Google comparator for IndexedDB databases
 * Check if user has Administrator/root privileges
 * Allow customisation of CSV output name
 * Batch CSV file (All LevelDB dumps into one file)
