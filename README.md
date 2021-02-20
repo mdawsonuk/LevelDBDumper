@@ -56,8 +56,8 @@ A massive thanks to Harsh Vardhan Singh and his [repo](https://github.com/harshv
 * ~~Ignore processing empty LevelDB databases to avoid creating empty output files~~ :heavy_check_mark:
 * ~~Travis CI builds for Windows and Linux~~ :heavy_check_mark:
 * ~~Allow toggling of output colouring~~ :heavy_check_mark:
+* ~~Check if user has Administrator/root privileges~~ :heavy_check_mark:
 * Implement idb_cmp1 Google comparator for IndexedDB databases
-* Check if user has Administrator/root privileges
 * Allow customisation of CSV output name
 * Batch CSV file (All LevelDB dumps into one file)
 * JSON export

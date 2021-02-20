@@ -23,9 +23,6 @@ jobs:
     - name: "Tests (Linux Ubuntu 18.04, Go 1.15.x)"
       go: 1.15.x
       script: ./test.sh
-    - name: "Tests (Linux Ubuntu 18.04, Go 1.14.x)"
-      go: 1.14.x
-      script: ./test.sh
 
     - name: "Tests (Windows, Go 1.16.x)"
       go: 1.16.x
@@ -35,10 +32,6 @@ jobs:
       go: 1.15.x
       script: ./test.sh
       os: windows
-    - name: "Tests (Windows, Go 1.14.x)"
-      go: 1.14.x
-      script: ./test.sh
-      os: windows
 
     - name: "Tests (OS X, Go 1.16.x)"
       go: 1.16.x
@@ -46,10 +39,6 @@ jobs:
       os: osx
     - name: "Tests (OS X, Go 1.15.x)"
       go: 1.15.x
-      script: ./test.sh
-      os: osx
-    - name: "Tests (OS X, Go 1.14.x)"
-      go: 1.14.x
       script: ./test.sh
       os: osx
 
@@ -75,3 +64,4 @@ before_install:
   - chmod +x ./deploy.sh
   - export GO111MODULE=auto
   - go get github.com/syndtr/goleveldb/leveldb
+  - go get golang.org/x/sys
