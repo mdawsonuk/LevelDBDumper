@@ -27,15 +27,17 @@
   </p>
 </p>
 
+### _Like the project? Please give it a star :star: to show your appreciation_
+
 ## Table of Contents
 
 * [About the Project](#about-the-project)
-* [TODO](#todo)
-* [Usage](#usage)
 * [Supported Applications](#supported-applications)
+* [Usage](#usage)
 * [Getting Started](#getting-started)
   * [Prerequisites](#prerequisites)
   * [Installation](#installation)
+* [To-Do](#to-do)
 * [Contributing](#contributing)
 * [License](#license)
 
@@ -44,25 +46,16 @@ This project was created out of a lack of a cross-platform tool which was able t
 
 I'm by no means an expert at using Go, so the code might not be as efficient or clean as it could be. If you want to help improve code quality, please consider [contributing](#contributing).
 
-A massive thanks to Harsh Vardhan Singh and his [repo](https://github.com/harshvsingh8/leveldb-reader) which did much of the LevelDB enumeration work for me.
+A massive thanks to Harsh Vardhan Singh and his [repo](https://github.com/harshvsingh8/leveldb-reader) which laid the foundations for some of the LevelDB enumeration work.
 
-## TODO
-* ~~Recursively parse from directory instead of providing one LevelDB database~~ :heavy_check_mark:
-* ~~Improved help dialog with list of arguments and examples~~ :heavy_check_mark:
-* ~~Export to CSV file for each discovered LevelDB database~~ :heavy_check_mark:
-* ~~Quiet mode to avoid dumping all Key/Values~~ :heavy_check_mark:
-* ~~Truncate long Values in non-quiet output~~ :heavy_check_mark:
-* ~~Display coloured Key/Value for non-quiet mode~~ :heavy_check_mark:
-* ~~Ignore processing empty LevelDB databases to avoid creating empty output files~~ :heavy_check_mark:
-* ~~Travis CI builds for Windows and Linux~~ :heavy_check_mark:
-* ~~Allow toggling of output colouring~~ :heavy_check_mark:
-* ~~Check if user has Administrator/root privileges~~ :heavy_check_mark:
-* Implement idb_cmp1 Google comparator for IndexedDB databases
-* Allow customisation of CSV output name
-* Batch CSV file (All LevelDB dumps into one file)
-* JSON export
-* Text export
-* Allow suppression of warning/error messages e.g. `2>/dev/null`
+## Supported Applications
+
+LevelDB Dumper has been tested to work on the following applications and provide the following forensics artifacts:
+
+* [Discord](https://discord.com/) - User email, User token, Recent games, Search history, Draft messages, Collapsed categories/channels, User settings, GIF favourites
+* [WhatsApp](https://www.whatsapp.com/) - User name, mobile phone type
+
+_This works on Local Storage LevelDBs - support for IndexedDBs using the idb_cmp1 comparator is coming soon, which will enable support for applications such as Skype, Microsoft Teams, and more_
 
 ## Usage
 
@@ -96,15 +89,6 @@ It is recommended to specify an output file for dumping. Using `-o <Directory>` 
 It is worth noting that all Unicode control characters/non-graphics characters are stripped from the output strings but are retained for file output, such as CSV. For applications such as Discord, where null terminators are found in Key names, this is used to improve output formatting.
 
 There have been issues with Windows 10 where the program is opened in a new window instead of the current Command Line window instance, meaning that the output is not visible. A work-around for this appears to be running the Command Prompt/Powershell as Administrator. However, for analysis of output, the key/value pairs should be output to a file rather than redirecting or analysing through the command line window.
-
-## Supported Applications
-
-LevelDB Dumper has been tested to work on the following applications and provide the following forensics artifacts:
-
-* [Discord](https://discord.com/) - User email, User token, Recent games, Search history, Draft messages, Collapsed categories/channels, User settings, GIF favourites
-* [WhatsApp](https://www.whatsapp.com/) - User name, mobile phone type
-
-_This works on Local Storage LevelDBs - support for IndexedDBs using the idb_cmp1 comparator is coming soon, which will enable support for applications such as Skype, Microsoft Teams, and more_
 
 ## Getting Started
 
@@ -141,6 +125,24 @@ go build
 ```
 
 4. That's it! An executable should be created in that directory. View the article [here](https://medium.com/@utranand/building-golang-package-for-linux-from-windows-22fa23764808) for information on cross-platform compilation.
+
+## To-Do
+* ~~Recursively parse from directory instead of providing one LevelDB database~~ :heavy_check_mark:
+* ~~Improved help dialog with list of arguments and examples~~ :heavy_check_mark:
+* ~~Export to CSV file for each discovered LevelDB database~~ :heavy_check_mark:
+* ~~Quiet mode to avoid dumping all Key/Values~~ :heavy_check_mark:
+* ~~Truncate long Values in non-quiet output~~ :heavy_check_mark:
+* ~~Display coloured Key/Value for non-quiet mode~~ :heavy_check_mark:
+* ~~Ignore processing empty LevelDB databases to avoid creating empty output files~~ :heavy_check_mark:
+* ~~Travis CI builds for Windows and Linux~~ :heavy_check_mark:
+* ~~Allow toggling of output colouring~~ :heavy_check_mark:
+* ~~Check if user has Administrator/root privileges~~ :heavy_check_mark:
+* Implement idb_cmp1 Google comparator for IndexedDB databases
+* Allow customisation of CSV output name
+* Batch CSV file (All LevelDB dumps into one file)
+* JSON export
+* Text export
+* Allow suppression of warning/error messages through command line e.g. `2>/dev/null`
 
 ## Contributing
 
