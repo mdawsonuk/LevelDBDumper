@@ -288,12 +288,17 @@ func openDb(dbPath string) {
 		ErrorIfMissing: true,
 	}
 
-	// TODO: Instead of checking path, open MANIFEST-XXXX file and read string value
-	if strings.Contains(dbPath, "\\IndexedDB\\") || strings.Contains(dbPath, "/IndexedDB/") {
-		fmt.Println()
-		printLine("IndexedDB idb_cmp1 comparator not yet implemented, results will not be valid", Warn)
+	comparator := getComparator(dbPath)
+
+	switch comparator {
+	case "idb_cmp1":
+		printLine("IndexedDB idb_cmp1 comparator not yet implemented, results will not be output", Fatal)
 		options.Comparer = idbCmp1{}
 		fmt.Println()
+		return
+	default:
+		// Just leave it, as default is leveldb.bitwisecomparator
+		break
 	}
 
 	start := time.Now()
@@ -372,6 +377,28 @@ func openDb(dbPath string) {
 	elapsed := time.Now().Sub(start)
 	printLine(fmt.Sprintf("Dumping LevelDB database took %s", elapsed), Info)
 	fmt.Println()
+}
+
+func getComparator(dbPath string) string {
+	files, err := filepath.Glob(filepath.Join(dbPath, "MANIFEST-*"))
+	checkError(err)
+	manifestPath := files[0]
+
+	f, err := os.Open(manifestPath)
+	contents := make([]byte, 32)
+	// The string containing the comparator type is always 9 bytes in
+	f.Seek(9, 0)
+	f.Read(contents)
+	f.Close()
+
+	for i, b := range contents {
+		// Read until we reach the 0x02 byte at the end of the comparator
+		if b == 0x02 {
+			return string(contents[:i])
+		}
+	}
+
+	return "Unknown"
 }
 
 func createCsvOutput(dbPath string, data [][]string) {
