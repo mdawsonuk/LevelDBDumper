@@ -27,7 +27,7 @@
   </p>
 </p>
 
-### _Like the project? Please give it a star :star: to show your appreciation_
+### _Like the project? Please give it a star :star: to show your appreciation and watch the project to get notified on new releases_
 
 ## Table of Contents
 
@@ -52,8 +52,8 @@ A massive thanks to Harsh Vardhan Singh and his [repo](https://github.com/harshv
 
 LevelDB Dumper has been tested to work on the following applications and provide the following forensics artifacts:
 
-* [Discord](https://discord.com/) - User email, User token, Recent games, Search history, Draft messages, Collapsed categories/channels, User settings, GIF favourites
-* [WhatsApp](https://www.whatsapp.com/) - User name, mobile phone type
+* [Discord](https://discord.com/) - User email, User token, Recent games, Search history, Draft messages, Collapsed categories/channels, User settings, GIF favourites (Local Storage DB)
+* [WhatsApp](https://www.whatsapp.com/) - User name, mobile phone type (Local Storage DB)
 
 _This works on Local Storage LevelDBs - support for IndexedDBs using the idb_cmp1 comparator is coming soon, which will enable support for applications such as Skype, Microsoft Teams, and more_
 
@@ -84,7 +84,7 @@ Examples: LevelDBParser.exe -d "C:\Temp\leveldb"
 
 LevelDB Dumper will search recursively from the directory passed to it for LevelDB databases. Upon finding one, it will be queued for dumping. Once it has searched the entire drive, the databases will be enumerated from the item list. By default, the Key/Value pairs are output to the console.
 
-It is recommended to specify an output file for dumping. Using `-o <Directory>` will output a file per LevelDB database found, with the file name containing the timestamp of dumping and path to the LevelDB database. The default format is CSV
+It is recommended to specify an output file for dumping. Using `-o <Directory>` will output a file per LevelDB database found, with the file name containing the timestamp of dumping and path to the LevelDB database. The default format is CSV. If you wish all the output to be in one file, `-b` will batch the outputs and add additional columns for path and the timestamp it was dumped at.
 
 It is worth noting that all Unicode control characters/non-graphics characters are stripped from the output strings but are retained for file output, such as CSV. For applications such as Discord, where null terminators are found in Key names, this is used to improve output formatting.
 
@@ -106,6 +106,8 @@ LevelDB is written in Go, so it can be run cross-platform. If you are building f
 
 2. That's it!
 
+_Commands available in the README can change from time to time. To get the available commands for the latest release, run with --help_
+
 #### From Repo
 
 1. Clone the repo
@@ -116,6 +118,11 @@ git clone https://github.com/mdawsonuk/LevelDBDumper.git
 2. Using Go CLI, get the GoLevelDB package
 ```sh
 go get github.com/syndtr/goleveldb/leveldb
+```
+
+If building on Windows, get the Windows sys package
+```sh
+go get golang.org/x/sys/windows
 ```
 
 3. Using Go CLI, build the application
@@ -137,12 +144,13 @@ go build
 * ~~Travis CI builds for Windows and Linux~~ :heavy_check_mark:
 * ~~Allow toggling of output colouring~~ :heavy_check_mark:
 * ~~Check if user has Administrator/root privileges~~ :heavy_check_mark:
-* Implement idb_cmp1 Google comparator for IndexedDB databases
-* Allow customisation of CSV output name
-* Batch CSV file (All LevelDB dumps into one file)
+* ~~Detect comparator type from MANIFEST file~~ :heavy_check_mark:
 * JSON export
-* Text export
+* Allow customisation of output name
+* Batch output file (All LevelDB dumps into one file)
+* Implement idb_cmp1 Google comparator for IndexedDB databases
 * Allow suppression of warning/error messages through command line e.g. `2>/dev/null`
+* Update check against GitHub (check latest release)
 
 ## Contributing
 
