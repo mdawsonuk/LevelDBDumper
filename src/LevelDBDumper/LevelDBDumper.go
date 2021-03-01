@@ -62,22 +62,22 @@ func Colour(colorString string) func(...interface{}) string {
 var (
 	searchResult []string
 
-	help       bool
-	rootPath   string
-	quiet      bool
-	outputType string = "csv"
-	outputDir  string
-	outputFile string
-	batch      bool
-	noColour   bool
-	noHeader   bool
+	help           bool
+	rootPath       string
+	quiet          bool
+	outputType     string = "csv"
+	outputDir      string
+	outputFile     string
+	batch          bool
+	noColour       bool
+	noHeader       bool
+	checkForUpdate bool
 )
 
 func getArgs(args []string) {
 	for i := 0; i < len(args); i++ {
 		if args[i] == "-h" || args[i] == "--help" {
 			help = true
-			break
 		}
 		if (args[i] == "-d" || args[i] == "--dir") && i+1 < len(args) {
 			path, err := filepath.Abs(args[i+1])
@@ -108,6 +108,9 @@ func getArgs(args []string) {
 		if args[i] == "--no-header" {
 			noHeader = true
 		}
+		if args[i] == "-u" || args[i] == "--check-update" {
+			checkForUpdate = true
+		}
 	}
 }
 
@@ -121,14 +124,17 @@ func printUsage() {
 	fmt.Println("      b/batch             Combine all output files into one file. Supported by \"csv\" and \"json\" file types")
 	fmt.Println("      no-colour/no-color  Don't colourise output")
 	fmt.Println("      no-header           Don't display the header")
+	fmt.Println("      u/check-update      Check for updates only")
 	fmt.Println()
 	fmt.Println("Short options (single letter) are prefixed with a single dash. Long commands are prefixed with two dashes")
 	fmt.Println()
 	fmt.Println("Examples: LevelDBParser.exe -d \"C:\\Temp\\leveldb\"")
 	fmt.Println("          LevelDBParser.exe -d \"C:\\Temp\\leveldb\" -o \"C:\\Temp\" -q")
-	fmt.Println("          LevelDBParser.exe -d \"C:\\Temp\\leveldb\" --no-colour --quiet")
+	fmt.Println("          LevelDBParser.exe -d \"C:\\Temp\\leveldb\" --no-colour --quiet --no-header")
 	fmt.Println("          LevelDBParser.exe -d \"C:\\Temp\\leveldb\" --no-colour -b --outputType json -outputFile Evidence.json")
 	fmt.Println("          LevelDBParser.exe -d \"C:\\Temp\\leveldb\" -t csv -f LevelDB.csv -o Evidence -b --no-colour --quiet")
+	fmt.Println("          LevelDBParser.exe --check-update")
+	fmt.Println("          LevelDBParser.exe --help")
 	fmt.Println()
 }
 
@@ -161,6 +167,13 @@ func dumpDBs(args []string) {
 	if !needsUpdate {
 		printLine("You are using the latest version of LevelDB Dumper", Purple)
 		fmt.Println()
+		if checkForUpdate {
+			os.Exit(0)
+		}
+	} else if checkForUpdate {
+		printLine(fmt.Sprintf("Version %s is now available for LevelDB Dumper - please update!", latestVersion), Purple)
+		fmt.Println()
+		os.Exit(0)
 	}
 
 	c := make(chan os.Signal)

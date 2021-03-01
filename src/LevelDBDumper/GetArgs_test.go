@@ -110,3 +110,35 @@ func TestArgsNoHeader(t *testing.T) {
 		t.Errorf("noHeader was incorrect, actual: %t, expected: true", noHeader)
 	}
 }
+
+func TestArgsUpdateShort(t *testing.T) {
+	args := []string{"-u"}
+	getArgs(args)
+	if checkForUpdate != true {
+		t.Errorf("checkForUpdate was incorrect, actual: %t, expected: true", checkForUpdate)
+	}
+}
+
+func TestArgsUpdateLong(t *testing.T) {
+	args := []string{"--check-update"}
+	getArgs(args)
+	if checkForUpdate != true {
+		t.Errorf("checkForUpdate was incorrect, actual: %t, expected: true", checkForUpdate)
+	}
+}
+
+func TestArgsHelpShort(t *testing.T) {
+	args := []string{"-h"}
+	getArgs(args)
+	if help != true {
+		t.Errorf("help was incorrect, actual: %t, expected: true", help)
+	}
+}
+
+func TestArgsHelpLong(t *testing.T) {
+	args := []string{"--help"}
+	getArgs(args)
+	if help != true {
+		t.Errorf("help was incorrect, actual: %t, expected: true", help)
+	}
+}
