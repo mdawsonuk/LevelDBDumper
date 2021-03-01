@@ -143,7 +143,8 @@ go build
 * ~~Check if user has Administrator/root privileges~~ :heavy_check_mark:
 * ~~Detect comparator type from MANIFEST file~~ :heavy_check_mark:
 * ~~Update check against GitHub (check latest release)~~ :heavy_check_mark:
-* JSON export
+* ~~JSON export~~ :heavy_check_mark:
+* Allow optional cleaning of output of non-graphical characters
 * Allow customisation of output name
 * Batch output file (All LevelDB dumps into one file)
 * Implement idb_cmp1 Google comparator for IndexedDB databases

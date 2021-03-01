@@ -384,7 +384,13 @@ func openDb(dbPath string) {
 	if outputDir != "" {
 		// When batching, timestamp column should use time.Now().Unix()
 		if len(data) > 0 {
-			createCsvOutput(dbPath, data)
+			switch outputType {
+			case "csv":
+				createCsvOutput(dbPath, data)
+			case "json":
+				createJSONOutput(dbPath, data)
+				break
+			}
 		}
 	}
 
@@ -439,6 +445,26 @@ func createCsvOutput(dbPath string, data [][]string) {
 		checkError(err)
 		csvWriter.Flush()
 	}
+}
+
+func createJSONOutput(dbPath string, data [][]string) {
+	var jsonData = map[string]string{}
+
+	for _, keyValue := range data {
+		jsonData[keyValue[0]] = keyValue[1]
+	}
+
+	json, _ := json.MarshalIndent(jsonData, "", " ")
+	fmt.Println(string(json))
+
+	timeNow := time.Now()
+	year, month, day := timeNow.Date()
+	escapedPath := strings.ReplaceAll(strings.ReplaceAll(strings.ReplaceAll(dbPath, "/", "_"), "\\", "_"), ":", "")
+	jsonFileName := fmt.Sprintf("%v%v%v%v%v%v_%v_LevelDBDumper.json", year, int(month), day, timeNow.Hour(), timeNow.Minute(), timeNow.Second(), escapedPath)
+	file, err := os.Create(filepath.Join(outputDir, jsonFileName))
+	checkError(err)
+	defer file.Close()
+	file.Write(json)
 }
 
 func checkUpdate() (bool, string) {
