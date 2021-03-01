@@ -60,10 +60,6 @@ _This works on Local Storage LevelDBs - support for IndexedDBs using the idb_cmp
 ## Usage
 
 ```
-LevelDB Dumper 3.0.0-alpha
-
-Author: Matt Dawson
-
       h/help              Display this help message.
       d/dir               Directory to recursively process. This is required.
       q/quiet             Don't output all key/value pairs to console. Default will output all key/value pairs
@@ -115,9 +111,10 @@ _Commands available in the README can change from time to time. To get the avail
 git clone https://github.com/mdawsonuk/LevelDBDumper.git
 ```
 
-2. Using Go CLI, get the GoLevelDB package
+2. Using Go CLI, get the required packages to build
 ```sh
 go get github.com/syndtr/goleveldb/leveldb
+go get github.com/hashicorp/go-version
 ```
 
 If building on Windows, get the Windows sys package
@@ -145,12 +142,12 @@ go build
 * ~~Allow toggling of output colouring~~ :heavy_check_mark:
 * ~~Check if user has Administrator/root privileges~~ :heavy_check_mark:
 * ~~Detect comparator type from MANIFEST file~~ :heavy_check_mark:
+* ~~Update check against GitHub (check latest release)~~ :heavy_check_mark:
 * JSON export
 * Allow customisation of output name
 * Batch output file (All LevelDB dumps into one file)
 * Implement idb_cmp1 Google comparator for IndexedDB databases
 * Allow suppression of warning/error messages through command line e.g. `2>/dev/null`
-* Update check against GitHub (check latest release)
 
 ## Contributing
 

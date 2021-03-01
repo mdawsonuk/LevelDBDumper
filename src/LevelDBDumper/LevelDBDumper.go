@@ -2,7 +2,10 @@ package main
 
 import (
 	"encoding/csv"
+	"encoding/json"
 	"fmt"
+	"io"
+	"net/http"
 	"os"
 	"os/signal"
 	"path/filepath"
@@ -11,9 +14,12 @@ import (
 	"time"
 	"unicode"
 
+	"github.com/hashicorp/go-version"
 	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/syndtr/goleveldb/leveldb/opt"
 )
+
+const VERSION string = "3.0.0-alpha"
 
 var (
 	// Info message colour
@@ -127,7 +133,7 @@ func main() {
 func dumpDBs(args []string) {
 
 	fmt.Println()
-	fmt.Println("LevelDB Dumper 3.0.0-alpha")
+	fmt.Println(fmt.Sprintf("LevelDB Dumper %s", VERSION))
 	fmt.Println()
 	fmt.Println("Author: Matt Dawson")
 	fmt.Println()
@@ -137,6 +143,13 @@ func dumpDBs(args []string) {
 	if help {
 		printUsage()
 		os.Exit(0)
+	}
+
+	needsUpdate, latestVersion := checkUpdate()
+
+	if !needsUpdate {
+		printLine("You are using the latest version of LevelDB Dumper", Purple)
+		fmt.Println()
 	}
 
 	c := make(chan os.Signal)
@@ -199,6 +212,12 @@ func dumpDBs(args []string) {
 	elapsed := time.Now().Sub(start)
 	printLine(fmt.Sprintf("Completed search in %v", elapsed), Info)
 	fmt.Println()
+
+	if needsUpdate {
+		printLine(fmt.Sprintf("Version %s is now available for LevelDB Dumper - please update!", latestVersion), Purple)
+		fmt.Println()
+	}
+
 	os.Exit(0)
 }
 
@@ -207,11 +226,14 @@ func searchForDBs() {
 
 	start := time.Now()
 	err := filepath.Walk(rootPath, findFile)
-	fmt.Println()
 	if err != nil {
 		return
 	}
 	elapsed := time.Now().Sub(start)
+
+	if len(searchResult) > 0 {
+		fmt.Println()
+	}
 
 	printLine(fmt.Sprintf("Searching for LevelDB databases from %s took %v", rootPath, elapsed), Info)
 	fmt.Println()
@@ -417,6 +439,24 @@ func createCsvOutput(dbPath string, data [][]string) {
 		checkError(err)
 		csvWriter.Flush()
 	}
+}
+
+func checkUpdate() (bool, string) {
+	resp, err := http.Get("https://api.github.com/repos/mdawsonuk/LevelDBDumper/releases/latest")
+	checkError(err)
+	defer resp.Body.Close()
+	body, err := io.ReadAll(resp.Body)
+
+	var results map[string]interface{}
+
+	json.Unmarshal(body, &results)
+
+	tag := fmt.Sprintf("%s", results["tag_name"])[1:]
+
+	currentVersion, _ := version.NewVersion(VERSION)
+	latestVersion, _ := version.NewVersion(tag)
+
+	return currentVersion.LessThan(latestVersion), tag
 }
 
 func removeControlChars(str string) string {

@@ -1,6 +1,7 @@
 # TODO: https://docs.travis-ci.com/user/multi-cpu-architectures/
 
 language: go
+go: 1.16.x
   
 git:
     quiet: true
@@ -17,35 +18,20 @@ jobs:
   fast_finish: true
   include:
     - stage: "Test"
-      name: "Tests (Linux Ubuntu 18.04, Go 1.16.x)"
-      go: 1.16.x
-      script: ./test.sh
-    - name: "Tests (Linux Ubuntu 18.04, Go 1.15.x)"
-      go: 1.15.x
-      script: ./test.sh
+      name: "Tests (Linux Ubuntu 18.04)"
+      script: ./.travisci/test.sh
 
-    - name: "Tests (Windows, Go 1.16.x)"
-      go: 1.16.x
-      script: ./test.sh
-      os: windows
-    - name: "Tests (Windows, Go 1.15.x)"
-      go: 1.15.x
-      script: ./test.sh
+    - name: "Tests (Windows)"
+      script: ./.travisci/test.sh
       os: windows
 
-    - name: "Tests (OS X, Go 1.16.x)"
-      go: 1.16.x
-      script: ./test.sh
-      os: osx
-    - name: "Tests (OS X, Go 1.15.x)"
-      go: 1.15.x
-      script: ./test.sh
+    - name: "Tests (OS X)"
+      script: ./.travisci/test.sh
       os: osx
 
     - stage: "Deploy"
       name: "Deploy to GitHub Releases"
-      go: 1.16.x
-      script: ./deploy.sh
+      script: ./.travisci/deploy.sh
       deploy:
         provider: releases
         token: $GITHUB_TOKEN
@@ -60,8 +46,5 @@ jobs:
           tags: true
 
 before_install:
-  - chmod +x ./test.sh
-  - chmod +x ./deploy.sh
-  - export GO111MODULE=auto
-  - go get github.com/syndtr/goleveldb/leveldb
-  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then go get golang.org/x/sys/windows; fi
+  - chmod +x ./.travisci/before_install.sh
+  - ./.travisci/before_install.sh
