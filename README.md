@@ -67,7 +67,7 @@ Author: Matt Dawson
       h/help              Display this help message.
       d/dir               Directory to recursively process. This is required.
       q/quiet             Don't output all key/value pairs to console. Default will output all key/value pairs
-      t/outputType        Output type. Can be "csv", "text" or "json". JSON and text coming soon
+      t/outputType        Output type. Can be "csv" or "json"
       o/outputDir         Directory to save all output results to. Required for any file output
       f/outputFile        Filename to use when saving output. This will be appended with path and date
       b/batch             Combine all output files into one file. Supported by "csv" and "json" file types
@@ -86,7 +86,7 @@ LevelDB Dumper will search recursively from the directory passed to it for Level
 
 It is recommended to specify an output file for dumping. Using `-o <Directory>` will output a file per LevelDB database found, with the file name containing the timestamp of dumping and path to the LevelDB database. The default format is CSV. If you wish all the output to be in one file, `-b` will batch the outputs and add additional columns for path and the timestamp it was dumped at.
 
-It is worth noting that all Unicode control characters/non-graphics characters are stripped from the output strings but are retained for file output, such as CSV. For applications such as Discord, where null terminators are found in Key names, this is used to improve output formatting.
+It is worth noting that all Unicode control characters/non-graphics characters are stripped from the output strings but are retained for file output, such as CSV. For applications such as Discord, where null terminators are found in Key names, this is used to improve output formatting. 
 
 There have been issues with Windows 10 where the program is opened in a new window instead of the current Command Line window instance, meaning that the output is not visible. A work-around for this appears to be running the Command Prompt/Powershell as Administrator. However, for analysis of output, the key/value pairs should be output to a file rather than redirecting or analysing through the command line window.
 

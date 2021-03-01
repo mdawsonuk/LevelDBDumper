@@ -104,7 +104,7 @@ func printUsage() {
 	fmt.Println("      h/help              Display this help message.")
 	fmt.Println("      d/dir               Directory to recursively process. This is required.")
 	fmt.Println("      q/quiet             Don't output all key/value pairs to console. Default will output all key/value pairs")
-	fmt.Println("      t/outputType        Output type. Can be \"csv\", \"text\" or \"json\". JSON and text coming soon")
+	fmt.Println("      t/outputType        Output type. Can be \"csv\" or \"json\"")
 	fmt.Println("      o/outputDir         Directory to save all output results to. Required for any file output")
 	fmt.Println("      f/outputFile        Filename to use when saving output. This will be appended with path and date")
 	fmt.Println("      b/batch             Combine all output files into one file. Supported by \"csv\" and \"json\" file types")
@@ -160,7 +160,6 @@ func dumpDBs(args []string) {
 	switch strings.ToLower(outputType) {
 	case
 		"csv",
-		"text",
 		"json":
 		break
 	default:
