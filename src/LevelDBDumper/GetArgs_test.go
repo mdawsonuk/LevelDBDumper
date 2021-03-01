@@ -102,3 +102,11 @@ func TestArgsNoColor(t *testing.T) {
 		t.Errorf("noColour was incorrect, actual: %t, expected: true", noColour)
 	}
 }
+
+func TestArgsNoHeader(t *testing.T) {
+	args := []string{"--no-header"}
+	getArgs(args)
+	if noHeader != true {
+		t.Errorf("noHeader was incorrect, actual: %t, expected: true", noHeader)
+	}
+}

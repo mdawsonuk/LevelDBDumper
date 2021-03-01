@@ -6,7 +6,7 @@
 		<img src="https://img.shields.io/travis/com/mdawsonuk/LevelDBDumper?style=flat-square" /></a>
   <a href="LICENSE" alt="Licence">
 		<img src="https://img.shields.io/github/license/mdawsonuk/LevelDBDumper?style=flat-square" /></a>
-	<a alt="Releases">
+	<a href="https://github.com/mdawsonuk/LevelDBDumper/releases" alt="Releases">
 		<img src="https://img.shields.io/github/v/release/mdawsonuk/LevelDBDumper?include_prereleases&style=flat-square&color=blue" /></a>
 	<a href="https://github.com/mdawsonuk/LevelDBDumper/issues" alt="Issues">
 		<img src="https://img.shields.io/github/issues/mdawsonuk/LevelDBDumper?style=flat-square" /></a>
@@ -14,7 +14,7 @@
 		<img src="https://img.shields.io/github/downloads/mdawsonuk/LevelDBDumper/total?style=flat-square" /></a>
 	<a href="https://github.com/mdawsonuk/LevelDBDumper/pulse" alt="Maintenance">
 		<img src="https://img.shields.io/maintenance/yes/2021?style=flat-square" /></a>
-	<a href="https://github.com/mdawsonuk/LevelDBDumper/">
+	<a href="https://github.com/mdawsonuk/LevelDBDumper/tree/master/src/LevelDBDumper">
 		<img src="https://img.shields.io/github/languages/code-size/mdawsonuk/LevelDBDumper?style=flat-square"
 			alt="Repo Size"></a>
   </p>
@@ -60,6 +60,8 @@ _This works on Local Storage LevelDBs - support for IndexedDBs using the idb_cmp
 ## Usage
 
 ```
+Command Line: -h
+
       h/help              Display this help message.
       d/dir               Directory to recursively process. This is required.
       q/quiet             Don't output all key/value pairs to console. Default will output all key/value pairs
@@ -68,6 +70,7 @@ _This works on Local Storage LevelDBs - support for IndexedDBs using the idb_cmp
       f/outputFile        Filename to use when saving output. This will be appended with path and date
       b/batch             Combine all output files into one file. Supported by "csv" and "json" file types
       no-colour/no-color  Don't colourise output
+      no-header           Don't display the header
 
 Short options (single letter) are prefixed with a single dash. Long commands are prefixed with two dashes
 
@@ -144,6 +147,8 @@ go build
 * ~~Detect comparator type from MANIFEST file~~ :heavy_check_mark:
 * ~~Update check against GitHub (check latest release)~~ :heavy_check_mark:
 * ~~JSON export~~ :heavy_check_mark:
+* ~~`--no-header` command to hide header~~ :heavy_check_mark:
+* `-u/--update` command to only check for update
 * Allow optional cleaning of output of non-graphical characters
 * Allow customisation of output name
 * Batch output file (All LevelDB dumps into one file)

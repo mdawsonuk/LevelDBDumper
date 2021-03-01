@@ -19,6 +19,7 @@ import (
 	"github.com/syndtr/goleveldb/leveldb/opt"
 )
 
+// VERSION of LevelDB Dumper
 const VERSION string = "3.0.0-alpha"
 
 var (
@@ -69,6 +70,7 @@ var (
 	outputFile string
 	batch      bool
 	noColour   bool
+	noHeader   bool
 )
 
 func getArgs(args []string) {
@@ -103,6 +105,9 @@ func getArgs(args []string) {
 		if args[i] == "--no-colour" || args[i] == "--no-color" {
 			noColour = true
 		}
+		if args[i] == "--no-header" {
+			noHeader = true
+		}
 	}
 }
 
@@ -115,6 +120,7 @@ func printUsage() {
 	fmt.Println("      f/outputFile        Filename to use when saving output. This will be appended with path and date")
 	fmt.Println("      b/batch             Combine all output files into one file. Supported by \"csv\" and \"json\" file types")
 	fmt.Println("      no-colour/no-color  Don't colourise output")
+	fmt.Println("      no-header           Don't display the header")
 	fmt.Println()
 	fmt.Println("Short options (single letter) are prefixed with a single dash. Long commands are prefixed with two dashes")
 	fmt.Println()
@@ -132,18 +138,23 @@ func main() {
 
 func dumpDBs(args []string) {
 
-	fmt.Println()
-	fmt.Println(fmt.Sprintf("LevelDB Dumper %s", VERSION))
-	fmt.Println()
-	fmt.Println("Author: Matt Dawson")
-	fmt.Println()
-
 	getArgs(args)
+
+	if !noHeader {
+		fmt.Println()
+		fmt.Println(fmt.Sprintf("LevelDB Dumper %s", VERSION))
+		fmt.Println()
+		fmt.Println("Author: Matt Dawson")
+		fmt.Println()
+	}
 
 	if help {
 		printUsage()
 		os.Exit(0)
 	}
+
+	fmt.Println("Command Line:", strings.Join(args[1:], " "))
+	fmt.Println()
 
 	needsUpdate, latestVersion := checkUpdate()
 
@@ -160,9 +171,6 @@ func dumpDBs(args []string) {
 		printLine("Ctrl+C detected, quitting...", Fatal)
 		os.Exit(0)
 	}()
-
-	fmt.Println("Command Line:", strings.Join(args[1:], " "))
-	fmt.Println()
 
 	if rootPath == "" {
 		printUsage()
@@ -455,7 +463,6 @@ func createJSONOutput(dbPath string, data [][]string) {
 	}
 
 	json, _ := json.MarshalIndent(jsonData, "", " ")
-	fmt.Println(string(json))
 
 	timeNow := time.Now()
 	year, month, day := timeNow.Date()
