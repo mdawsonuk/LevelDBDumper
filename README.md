@@ -69,6 +69,7 @@ Command Line: -h
       o/outputDir         Directory to save all output results to. Required for any file output
       f/outputFile        Filename to use when saving output. This will be appended with path and date
       b/batch             Combine all output files into one file. Supported by "csv" and "json" file types
+      c/clean-output      Clean the file output of non-visual characters, such as \\u001
       no-colour/no-color  Don't colourise output
       no-header           Don't display the header
       u/check-update      Check for updates only
@@ -77,7 +78,7 @@ Short options (single letter) are prefixed with a single dash. Long commands are
 
 Examples: LevelDBParser.exe -d "C:\Temp\leveldb"
           LevelDBParser.exe -d "C:\Temp\leveldb" -o "C:\Temp" -q
-          LevelDBParser.exe -d "C:\Temp\leveldb" --no-colour --quiet --no-header
+          LevelDBParser.exe -d "C:\Temp\leveldb" --no-colour --quiet --no-header --clean-output
           LevelDBParser.exe -d "C:\Temp\leveldb" --no-colour -b --outputType json -outputFile Evidence.json
           LevelDBParser.exe -d "C:\Temp\leveldb" -t csv -f LevelDB.csv -o Evidence -b --no-colour --quiet
           LevelDBParser.exe --check-update
@@ -151,10 +152,10 @@ go build
 * ~~Update check against GitHub (check latest release)~~ :heavy_check_mark:
 * ~~JSON export~~ :heavy_check_mark:
 * ~~`--no-header` command to hide header~~ :heavy_check_mark:
-* ~~`-u/--update` command to only check for update~~
-* Allow optional cleaning of output of non-graphical characters
-* Allow customisation of output name
+* ~~`-u/--update` command to only check for update~~ :heavy_check_mark:
+* ~~Allow optional cleaning of output of non-graphical characters~~ :heavy_check_mark:
 * Batch output file (All LevelDB dumps into one file)
+* Allow customisation of output name
 * Implement idb_cmp1 Google comparator for IndexedDB databases
 * Allow suppression of warning/error messages through command line e.g. `2>/dev/null`
 

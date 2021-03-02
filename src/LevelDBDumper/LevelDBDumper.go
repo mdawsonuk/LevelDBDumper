@@ -72,6 +72,7 @@ var (
 	noColour       bool
 	noHeader       bool
 	checkForUpdate bool
+	cleanOutput    bool
 )
 
 func getArgs(args []string) {
@@ -111,6 +112,9 @@ func getArgs(args []string) {
 		if args[i] == "-u" || args[i] == "--check-update" {
 			checkForUpdate = true
 		}
+		if args[i] == "-c" || args[i] == "--clean-output" {
+			cleanOutput = true
+		}
 	}
 }
 
@@ -122,6 +126,7 @@ func printUsage() {
 	fmt.Println("      o/outputDir         Directory to save all output results to. Required for any file output")
 	fmt.Println("      f/outputFile        Filename to use when saving output. This will be appended with path and date")
 	fmt.Println("      b/batch             Combine all output files into one file. Supported by \"csv\" and \"json\" file types")
+	fmt.Println("      c/clean-output      Clean the file output of non-visual characters, such as \\u001")
 	fmt.Println("      no-colour/no-color  Don't colourise output")
 	fmt.Println("      no-header           Don't display the header")
 	fmt.Println("      u/check-update      Check for updates only")
@@ -130,7 +135,7 @@ func printUsage() {
 	fmt.Println()
 	fmt.Println("Examples: LevelDBParser.exe -d \"C:\\Temp\\leveldb\"")
 	fmt.Println("          LevelDBParser.exe -d \"C:\\Temp\\leveldb\" -o \"C:\\Temp\" -q")
-	fmt.Println("          LevelDBParser.exe -d \"C:\\Temp\\leveldb\" --no-colour --quiet --no-header")
+	fmt.Println("          LevelDBParser.exe -d \"C:\\Temp\\leveldb\" --no-colour --quiet --no-header --clean-output")
 	fmt.Println("          LevelDBParser.exe -d \"C:\\Temp\\leveldb\" --no-colour -b --outputType json -outputFile Evidence.json")
 	fmt.Println("          LevelDBParser.exe -d \"C:\\Temp\\leveldb\" -t csv -f LevelDB.csv -o Evidence -b --no-colour --quiet")
 	fmt.Println("          LevelDBParser.exe --check-update")
@@ -362,6 +367,9 @@ func openDb(dbPath string) {
 	for iter.Next() {
 		key := iter.Key()
 		keyName := string(key[:])
+		if cleanOutput {
+			keyName = removeControlChars(keyName)
+		}
 
 		byteValue, err := db.Get([]byte(key), nil)
 		if err != nil {
@@ -370,6 +378,9 @@ func openDb(dbPath string) {
 			return
 		}
 		value := string(byteValue)
+		if cleanOutput {
+			value = removeControlChars(value)
+		}
 
 		data = append(data, []string{keyName, value})
 	}

@@ -142,3 +142,19 @@ func TestArgsHelpLong(t *testing.T) {
 		t.Errorf("help was incorrect, actual: %t, expected: true", help)
 	}
 }
+
+func TestArgsCleanShort(t *testing.T) {
+	args := []string{"-c"}
+	getArgs(args)
+	if cleanOutput != true {
+		t.Errorf("cleanOutput was incorrect, actual: %t, expected: true", cleanOutput)
+	}
+}
+
+func TestArgsCleanLong(t *testing.T) {
+	args := []string{"--clean-output"}
+	getArgs(args)
+	if cleanOutput != true {
+		t.Errorf("cleanOutput was incorrect, actual: %t, expected: true", cleanOutput)
+	}
+}
