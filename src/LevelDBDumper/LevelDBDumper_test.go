@@ -1,11 +1,9 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 	"testing"
-	"time"
 )
 
 func TestFilewalkLevelDBDatabaseTopLevelDatabase(t *testing.T) {
@@ -81,22 +79,6 @@ func TestRemoveControlChars(t *testing.T) {
 	if output != "ABC" {
 		t.Errorf("removeControlChars was incorrect, actual: %s, expected: ABC", output)
 	}
-}
-
-func TestOutputCSV(t *testing.T) {
-	outputDir, _ = filepath.Abs(".")
-	timeNow := time.Now()
-	year, month, day := timeNow.Date()
-	csvFileName := fmt.Sprintf("%v%v%v%v%v%v_%v_LevelDBDumper.csv", year, int(month), day, timeNow.Hour(), timeNow.Minute(), timeNow.Second(), "Test DB Path")
-	createCsvOutput("Test DB Path", [][]string{
-		{"Test Key", "Test Value"},
-	})
-	_, err := os.Stat(csvFileName)
-	if os.IsNotExist(err) {
-		t.Error("File", csvFileName, "should exist")
-	}
-
-	os.Remove(csvFileName)
 }
 
 func TestFileExists(t *testing.T) {

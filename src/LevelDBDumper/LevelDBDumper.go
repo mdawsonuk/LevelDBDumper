@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/csv"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -19,8 +18,16 @@ import (
 	"github.com/syndtr/goleveldb/leveldb/opt"
 )
 
+// ParsedDB holds data for a parsed LevelDB database
+type ParsedDB struct {
+	path   string
+	time   int64
+	keys   []string
+	values []string
+}
+
 // VERSION of LevelDB Dumper
-const VERSION string = "3.0.0-alpha"
+const VERSION string = "3.0.0-alpha.1"
 
 var (
 	// Info message colour
@@ -60,7 +67,8 @@ func Colour(colorString string) func(...interface{}) string {
 }
 
 var (
-	searchResult []string
+	searchResult    []string
+	parsedDatabases []ParsedDB
 
 	help           bool
 	rootPath       string
@@ -276,6 +284,7 @@ func readDBs() {
 	for _, v := range searchResult {
 		openDb(v)
 	}
+	writeDBInfo()
 }
 
 func fileExists(path string) (bool, error) {
@@ -363,7 +372,7 @@ func openDb(dbPath string) {
 
 	iter := db.NewIterator(nil, nil)
 
-	var data = [][]string{}
+	var database = ParsedDB{path: dbPath, time: time.Now().Unix(), keys: []string{}, values: []string{}}
 	for iter.Next() {
 		key := iter.Key()
 		keyName := string(key[:])
@@ -382,17 +391,19 @@ func openDb(dbPath string) {
 			value = removeControlChars(value)
 		}
 
-		data = append(data, []string{keyName, value})
+		database.keys = append(database.keys, keyName)
+		database.values = append(database.values, value)
 	}
+	parsedDatabases = append(parsedDatabases, database)
 
 	if !quiet {
-		if len(data) > 0 {
+		if len(database.keys) > 0 {
 			if !quiet {
 				printLine(fmt.Sprintf("%-56vValue:", "Key:"), Info)
 			}
-			for _, keyValue := range data {
-				escapedKey := removeControlChars(keyValue[0])   //fmt.Sprintf("%q", keyName)
-				escapedValue := removeControlChars(keyValue[1]) //fmt.Sprintf("%q", value)
+			for index := range database.keys {
+				escapedKey := removeControlChars(database.keys[index])     //fmt.Sprintf("%q", keyName)
+				escapedValue := removeControlChars(database.values[index]) //fmt.Sprintf("%q", value)
 				if len(escapedValue) > 80 {
 					if noColour {
 						fmt.Printf("%-53v | "+escapedValue[:80]+"...\n", escapedKey)
@@ -410,19 +421,6 @@ func openDb(dbPath string) {
 			}
 		} else {
 			printLine("Parsed database but no key/value pairs were found", Warn)
-		}
-	}
-
-	if outputDir != "" {
-		// When batching, timestamp column should use time.Now().Unix()
-		if len(data) > 0 {
-			switch outputType {
-			case "csv":
-				createCsvOutput(dbPath, data)
-			case "json":
-				createJSONOutput(dbPath, data)
-				break
-			}
 		}
 	}
 
@@ -460,46 +458,10 @@ func getComparator(dbPath string) string {
 	return "Unknown"
 }
 
-func createCsvOutput(dbPath string, data [][]string) {
-	timeNow := time.Now()
-	year, month, day := timeNow.Date()
-	escapedPath := strings.ReplaceAll(strings.ReplaceAll(strings.ReplaceAll(dbPath, "/", "_"), "\\", "_"), ":", "")
-	csvFileName := fmt.Sprintf("%v%v%v%v%v%v_%v_LevelDBDumper.csv", year, int(month), day, timeNow.Hour(), timeNow.Minute(), timeNow.Second(), escapedPath)
-	file, err := os.Create(filepath.Join(outputDir, csvFileName))
-	checkError(err)
-	defer file.Close()
-
-	csvWriter := csv.NewWriter(file)
-	csvWriter.Write([]string{"Key", "Value"})
-
-	for _, value := range data {
-		err := csvWriter.Write(value)
-		checkError(err)
-		csvWriter.Flush()
-	}
-}
-
-func createJSONOutput(dbPath string, data [][]string) {
-	var jsonData = map[string]string{}
-
-	for _, keyValue := range data {
-		jsonData[keyValue[0]] = keyValue[1]
-	}
-
-	json, _ := json.MarshalIndent(jsonData, "", " ")
-
-	timeNow := time.Now()
-	year, month, day := timeNow.Date()
-	escapedPath := strings.ReplaceAll(strings.ReplaceAll(strings.ReplaceAll(dbPath, "/", "_"), "\\", "_"), ":", "")
-	jsonFileName := fmt.Sprintf("%v%v%v%v%v%v_%v_LevelDBDumper.json", year, int(month), day, timeNow.Hour(), timeNow.Minute(), timeNow.Second(), escapedPath)
-	file, err := os.Create(filepath.Join(outputDir, jsonFileName))
-	checkError(err)
-	defer file.Close()
-	file.Write(json)
-}
-
 func checkUpdate() (bool, string) {
-	resp, err := http.Get("https://api.github.com/repos/mdawsonuk/LevelDBDumper/releases/latest")
+	url := "https://api.github.com/repos/mdawsonuk/LevelDBDumper/releases/latest"
+
+	resp, err := http.Get(url)
 	checkError(err)
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
@@ -508,10 +470,11 @@ func checkUpdate() (bool, string) {
 
 	json.Unmarshal(body, &results)
 
+	// Drop the v from the tag
 	tag := fmt.Sprintf("%s", results["tag_name"])[1:]
 
-	currentVersion, _ := version.NewVersion(VERSION)
-	latestVersion, _ := version.NewVersion(tag)
+	currentVersion, _ := version.NewSemver(VERSION)
+	latestVersion, _ := version.NewSemver(tag)
 
 	return currentVersion.LessThan(latestVersion), tag
 }
