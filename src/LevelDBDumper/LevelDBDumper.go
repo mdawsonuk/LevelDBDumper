@@ -8,144 +8,18 @@ import (
 	"strings"
 	"syscall"
 	"time"
-	"unicode"
 
 	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/syndtr/goleveldb/leveldb/opt"
 )
 
-// ParsedDB holds data for a parsed LevelDB database
-type ParsedDB struct {
-	path         string
-	modifiedTime time.Time
-	keys         []string
-	values       []string
-}
-
 // VERSION of LevelDB Dumper
-const VERSION string = "3.0.0-alpha.1"
-
-var (
-	// Info message colour
-	Info = Teal
-	// Warn message colour
-	Warn = Yellow
-	// Fatal message colour
-	Fatal = Red
-)
-
-var (
-	// Black message colour
-	Black = Colour("\033[1;30m%s\033[0m")
-	// Red message colour
-	Red = Colour("\033[1;31m%s\033[0m")
-	// Green message colour
-	Green = Colour("\033[1;32m%s\033[0m")
-	// Yellow message colour
-	Yellow = Colour("\033[1;33m%s\033[0m")
-	// Purple message colour
-	Purple = Colour("\033[1;34m%s\033[0m")
-	// Magenta message colour
-	Magenta = Colour("\033[1;35m%s\033[0m")
-	// Teal message colour
-	Teal = Colour("\033[1;36m%s\033[0m")
-	// White message colour
-	White = Colour("\033[1;37m%s\033[0m")
-)
-
-// Colour the string based on the string given
-func Colour(colorString string) func(...interface{}) string {
-	sprint := func(args ...interface{}) string {
-		return fmt.Sprintf(colorString,
-			fmt.Sprint(args...))
-	}
-	return sprint
-}
+const VERSION string = "3.0.0-alpha.2"
 
 var (
 	searchResult    []string
 	parsedDatabases []ParsedDB
-
-	help           bool
-	rootPath       string
-	quiet          bool
-	outputType     string = "csv"
-	outputDir      string
-	outputFile     string
-	batch          bool
-	noColour       bool
-	noHeader       bool
-	checkForUpdate bool
-	cleanOutput    bool
 )
-
-func getArgs(args []string) {
-	for i := 0; i < len(args); i++ {
-		if args[i] == "-h" || args[i] == "--help" {
-			help = true
-		}
-		if (args[i] == "-d" || args[i] == "--dir") && i+1 < len(args) {
-			path, err := filepath.Abs(args[i+1])
-			if err != nil {
-				printLine(fmt.Sprintf("Unable to get absolute path of %s", path), Fatal)
-			} else {
-				rootPath = path
-			}
-		}
-		if args[i] == "-q" || args[i] == "--quiet" {
-			quiet = true
-		}
-		if (args[i] == "-t" || args[i] == "--outputType") && i+1 < len(args) {
-			outputType = args[i+1]
-		}
-		if (args[i] == "-o" || args[i] == "--outputDir") && i+1 < len(args) {
-			outputDir = args[i+1]
-		}
-		if (args[i] == "-f" || args[i] == "--outputFile") && i+1 < len(args) {
-			outputFile = args[i+1]
-		}
-		if args[i] == "-b" || args[i] == "--batch" {
-			batch = true
-		}
-		if args[i] == "--no-colour" || args[i] == "--no-color" {
-			noColour = true
-		}
-		if args[i] == "--no-header" {
-			noHeader = true
-		}
-		if args[i] == "-u" || args[i] == "--check-update" {
-			checkForUpdate = true
-		}
-		if args[i] == "-c" || args[i] == "--clean-output" {
-			cleanOutput = true
-		}
-	}
-}
-
-func printUsage() {
-	fmt.Println("      h/help              Display this help message.")
-	fmt.Println("      d/dir               Directory to recursively process. This is required.")
-	fmt.Println("      q/quiet             Don't output all key/value pairs to console. Default will output all key/value pairs")
-	fmt.Println("      t/outputType        Output type. Can be \"csv\" or \"json\"")
-	fmt.Println("      o/outputDir         Directory to save all output results to. Required for any file output")
-	fmt.Println("      f/outputFile        Filename to use when saving output. This will be appended with path and date")
-	fmt.Println("      b/batch             Combine all output files into one file. Supported by \"csv\" and \"json\" file types")
-	fmt.Println("      c/clean-output      Clean the file output of non-visual characters, such as \\u001")
-	fmt.Println("      no-colour/no-color  Don't colourise output")
-	fmt.Println("      no-header           Don't display the header")
-	fmt.Println("      u/check-update      Check for updates only")
-	fmt.Println()
-	fmt.Println("Short options (single letter) are prefixed with a single dash. Long commands are prefixed with two dashes")
-	fmt.Println()
-	fmt.Println("Examples: LevelDBParser.exe -d \"C:\\Temp\\leveldb\"")
-	fmt.Println("          LevelDBParser.exe -d \"C:\\Temp\\leveldb\" -o \"C:\\Temp\" -q")
-	fmt.Println("          LevelDBParser.exe -d \"C:\\Temp\\leveldb\" --no-colour --quiet --no-header --clean-output")
-	fmt.Println("          LevelDBParser.exe -d \"C:\\Temp\\leveldb\" --no-colour -b --outputType json -outputFile Evidence.json")
-	fmt.Println("          LevelDBParser.exe -d \"C:\\Temp\\leveldb\" -t csv -f LevelDB.csv -o Evidence -b --no-colour --quiet")
-	fmt.Println("          LevelDBParser.exe --check-update")
-	fmt.Println("          LevelDBParser.exe --help")
-	fmt.Println()
-}
 
 func main() {
 	dumpDBs(os.Args)
@@ -282,17 +156,6 @@ func readDBs() {
 	}
 	// See FileOutputs.go
 	writeDBInfo()
-}
-
-func fileExists(path string) (bool, error) {
-	_, err := os.Stat(path)
-	if err == nil {
-		return true, nil
-	}
-	if os.IsNotExist(err) {
-		return false, nil
-	}
-	return true, err
 }
 
 func findFile(path string, fileInfo os.FileInfo, err error) error {
@@ -463,29 +326,4 @@ func getComparator(dbPath string) string {
 	}
 
 	return "Unknown"
-}
-
-func removeControlChars(str string) string {
-	return strings.Map(func(r rune) rune {
-		if unicode.IsGraphic(r) {
-			return r
-		}
-		return -1
-	}, str)
-}
-
-func checkError(err error) {
-	if err != nil {
-		fmt.Println(Fatal(err))
-	}
-}
-
-type format func(...interface{}) string
-
-func printLine(contents string, fn format) {
-	if noColour {
-		fmt.Println(contents)
-	} else {
-		fmt.Println(fn(contents))
-	}
 }
