@@ -11,8 +11,7 @@ dist: bionic
 
 stages:
   - Test
-  - name: Deploy
-    if: tags = true
+  - Deploy
 
 jobs:
   fast_finish: true
