@@ -6,14 +6,15 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"strconv"
 	"strings"
 	"time"
 )
 
+const timeFormat = "2006-01-02T15:04:05"
+
 // JSONDB holds all of the JSON data for the array of databases
 type JSONDB struct {
-	ModifiedTimestamp int64             `json:"modified_timestamp`
+	ModifiedTimestamp string            `json:"modified_timestamp"`
 	Path              string            `json:"path"`
 	Data              map[string]string `json:"data"`
 }
@@ -30,7 +31,6 @@ func writeDBInfo() {
 	} else {
 		for _, database := range parsedDatabases {
 			if outputDir != "" {
-				// When batching, timestamp column should use time.Now().Unix()
 				if len(database.keys) > 0 {
 					switch outputType {
 					case "csv":
@@ -75,7 +75,7 @@ func createBatchCsvOutput() {
 
 	for _, db := range parsedDatabases {
 		for index := range db.keys {
-			err := csvWriter.Write([]string{strconv.FormatInt(db.modifiedTime, 10), db.keys[index], db.values[index], db.path})
+			err := csvWriter.Write([]string{db.modifiedTime.Format(timeFormat), db.keys[index], db.values[index], db.path})
 			checkError(err)
 			csvWriter.Flush()
 		}
@@ -109,7 +109,7 @@ func createBatchJSONOutput() {
 		for index := range db.keys {
 			data[db.keys[index]] = db.values[index]
 		}
-		databases = append(databases, JSONDB{ModifiedTimestamp: db.modifiedTime, Path: db.path, Data: data})
+		databases = append(databases, JSONDB{ModifiedTimestamp: db.modifiedTime.Format(timeFormat), Path: db.path, Data: data})
 	}
 
 	json, _ := json.MarshalIndent(databases, "", " ")

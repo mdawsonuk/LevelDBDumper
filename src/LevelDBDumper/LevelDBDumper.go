@@ -17,7 +17,7 @@ import (
 // ParsedDB holds data for a parsed LevelDB database
 type ParsedDB struct {
 	path         string
-	modifiedTime int64
+	modifiedTime time.Time
 	keys         []string
 	values       []string
 }
@@ -376,7 +376,9 @@ func openDb(dbPath string) {
 	manifestPath := files[0]
 	info, err := os.Stat(manifestPath)
 	checkError(err)
-	var database = ParsedDB{path: dbPath, modifiedTime: info.ModTime().Unix(), keys: []string{}, values: []string{}}
+	// Display the dates in UTC
+	loc, _ := time.LoadLocation("UTC")
+	var database = ParsedDB{path: dbPath, modifiedTime: info.ModTime().In(loc), keys: []string{}, values: []string{}}
 
 	for iter.Next() {
 		key := iter.Key()
