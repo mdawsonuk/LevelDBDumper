@@ -1,10 +1,7 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"io"
-	"net/http"
 	"os"
 	"os/signal"
 	"path/filepath"
@@ -13,17 +10,16 @@ import (
 	"time"
 	"unicode"
 
-	"github.com/hashicorp/go-version"
 	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/syndtr/goleveldb/leveldb/opt"
 )
 
 // ParsedDB holds data for a parsed LevelDB database
 type ParsedDB struct {
-	path   string
-	time   int64
-	keys   []string
-	values []string
+	path         string
+	modifiedTime int64
+	keys         []string
+	values       []string
 }
 
 // VERSION of LevelDB Dumper
@@ -284,6 +280,7 @@ func readDBs() {
 	for _, v := range searchResult {
 		openDb(v)
 	}
+	// See FileOutputs.go
 	writeDBInfo()
 }
 
@@ -372,7 +369,14 @@ func openDb(dbPath string) {
 
 	iter := db.NewIterator(nil, nil)
 
-	var database = ParsedDB{path: dbPath, time: time.Now().Unix(), keys: []string{}, values: []string{}}
+	// TODO: If you get created time, either use directory or LOG file
+	files, err := filepath.Glob(filepath.Join(dbPath, "MANIFEST-*"))
+	checkError(err)
+	manifestPath := files[0]
+	info, err := os.Stat(manifestPath)
+	checkError(err)
+	var database = ParsedDB{path: dbPath, modifiedTime: info.ModTime().Unix(), keys: []string{}, values: []string{}}
+
 	for iter.Next() {
 		key := iter.Key()
 		keyName := string(key[:])
@@ -456,27 +460,6 @@ func getComparator(dbPath string) string {
 	}
 
 	return "Unknown"
-}
-
-func checkUpdate() (bool, string) {
-	url := "https://api.github.com/repos/mdawsonuk/LevelDBDumper/releases/latest"
-
-	resp, err := http.Get(url)
-	checkError(err)
-	defer resp.Body.Close()
-	body, err := io.ReadAll(resp.Body)
-
-	var results map[string]interface{}
-
-	json.Unmarshal(body, &results)
-
-	// Drop the v from the tag
-	tag := fmt.Sprintf("%s", results["tag_name"])[1:]
-
-	currentVersion, _ := version.NewSemver(VERSION)
-	latestVersion, _ := version.NewSemver(tag)
-
-	return currentVersion.LessThan(latestVersion), tag
 }
 
 func removeControlChars(str string) string {

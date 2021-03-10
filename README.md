@@ -154,7 +154,7 @@ go build
 * ~~`--no-header` command to hide header~~ :heavy_check_mark:
 * ~~`-u/--update` command to only check for update~~ :heavy_check_mark:
 * ~~Allow optional cleaning of output of non-graphical characters~~ :heavy_check_mark:
-* Batch output file (All LevelDB dumps into one file)
+* ~~Batch output file (All LevelDB dumps into one file)~~ :heavy_check_mark:
 * Allow customisation of output name
 * Implement idb_cmp1 Google comparator for IndexedDB databases
 * Allow suppression of warning/error messages through command line e.g. `2>/dev/null`
