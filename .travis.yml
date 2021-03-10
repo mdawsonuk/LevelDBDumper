@@ -36,12 +36,12 @@ jobs:
         provider: releases
         token: $GITHUB_TOKEN
         file:
-          - "LevelDBDumper"
-          - "LevelDBDumper.app.zip"
-          - "LevelDBDumper.exe"
-          - "LevelDBDumper_x86.exe"
+          - "./src/LevelDB/LevelDBDumper"
+          - "./src/LevelDB/LevelDBDumper.app.zip"
+          - "./src/LevelDB/LevelDBDumper.exe"
+          - "./src/LevelDB/LevelDBDumper_x86.exe"
         draft: true
-        skip_cleanup: true
+        edge: true
         name: "LevelDB Dumper $TRAVIS_TAG"
         on:
           tags: true
