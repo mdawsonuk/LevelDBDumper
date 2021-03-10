@@ -41,7 +41,7 @@ jobs:
           - "./src/LevelDB/LevelDBDumper.exe"
           - "./src/LevelDB/LevelDBDumper_x86.exe"
         draft: true
-        edge: true
+        skip_cleanup: true
         name: "LevelDB Dumper $TRAVIS_TAG"
         on:
           tags: true
