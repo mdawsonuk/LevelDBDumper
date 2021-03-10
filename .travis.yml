@@ -41,12 +41,6 @@ jobs:
           - "./src/LevelDBDumper/LevelDBDumper.exe"
           - "./src/LevelDBDumper/LevelDBDumper_x86.exe"
         draft: true
-        body: "
-        Available Downloads:
-        - LevelDBDumper - Linux x64 executable
-        - LevelDBDumper.app.zip - Mac OS X x64 executable
-        - LevelDBDumper.exe - Windows x64 executable
-        - LevelDBDumper_x86.exe - Windows x86 executable"
         skip_cleanup: true
         name: "LevelDB Dumper $TRAVIS_TAG"
         on:

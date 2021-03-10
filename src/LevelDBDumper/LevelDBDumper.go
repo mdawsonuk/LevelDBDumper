@@ -339,6 +339,7 @@ func openDb(dbPath string) {
 
 	options := &opt.Options{
 		ErrorIfMissing: true,
+		ReadOnly:       true,
 	}
 
 	comparator := getComparator(dbPath)
