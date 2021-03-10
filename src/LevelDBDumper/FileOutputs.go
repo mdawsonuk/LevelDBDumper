@@ -20,6 +20,11 @@ type JSONDB struct {
 }
 
 func writeDBInfo() {
+	err := os.MkdirAll(outputDir, os.ModePerm)
+	checkError(err)
+	if err != nil {
+		return
+	}
 	if batch {
 		switch outputType {
 		case "csv":
@@ -52,6 +57,9 @@ func createCsvOutput(db ParsedDB) {
 	csvFileName := fmt.Sprintf("%v%v%v%v%v%v_%v_LevelDBDumper.csv", year, int(month), day, timeNow.Hour(), timeNow.Minute(), timeNow.Second(), escapedPath)
 	file, err := os.Create(filepath.Join(outputDir, csvFileName))
 	checkError(err)
+	if err != nil {
+		return
+	}
 	defer file.Close()
 
 	csvWriter := csv.NewWriter(file)
@@ -68,6 +76,9 @@ func createBatchCsvOutput() {
 	csvFileName := "LevelDBDumper.csv"
 	file, err := os.Create(filepath.Join(outputDir, csvFileName))
 	checkError(err)
+	if err != nil {
+		return
+	}
 	defer file.Close()
 
 	csvWriter := csv.NewWriter(file)
@@ -98,6 +109,9 @@ func createJSONOutput(db ParsedDB) {
 	file, err := os.Create(filepath.Join(outputDir, jsonFileName))
 	checkError(err)
 	defer file.Close()
+	if err != nil {
+		return
+	}
 	file.Write(json)
 }
 
@@ -118,5 +132,8 @@ func createBatchJSONOutput() {
 	file, err := os.Create(filepath.Join(outputDir, jsonFileName))
 	checkError(err)
 	defer file.Close()
+	if err != nil {
+		return
+	}
 	file.Write(json)
 }
