@@ -20,6 +20,9 @@ type JSONDB struct {
 }
 
 func writeDBInfo() {
+	if outputDir == "" {
+		return
+	}
 	err := os.MkdirAll(outputDir, os.ModePerm)
 	checkError(err)
 	if err != nil {
