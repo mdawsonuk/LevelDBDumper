@@ -14,6 +14,9 @@ func checkUpdate() (bool, string) {
 
 	resp, err := http.Get(url)
 	checkError(err)
+	if resp == nil {
+		return false, VERSION
+	}
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
 

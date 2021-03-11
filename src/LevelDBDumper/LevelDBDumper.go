@@ -241,6 +241,17 @@ func openDb(dbPath string) {
 	checkError(err)
 	// Display the dates in UTC
 	loc, _ := time.LoadLocation("UTC")
+	if timezone != "" {
+		// Display the dates in UTC
+		loc, err = time.LoadLocation(timezone)
+		checkError(err)
+		if err != nil {
+			printLine("Defaulting to using UTC timezone", Warn)
+			fmt.Println()
+			loc, _ = time.LoadLocation("UTC")
+		}
+	}
+
 	var database = ParsedDB{path: dbPath, modifiedTime: info.ModTime().In(loc), keys: []string{}, values: []string{}}
 
 	for iter.Next() {

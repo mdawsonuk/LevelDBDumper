@@ -66,7 +66,7 @@ func removeControlChars(str string) string {
 
 func checkError(err error) {
 	if err != nil {
-		fmt.Println(Fatal(err))
+		printLine(err.Error(), Fatal)
 	}
 }
 

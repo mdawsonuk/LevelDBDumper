@@ -60,16 +60,15 @@ _This works on Local Storage LevelDBs - support for IndexedDBs using the idb_cmp
 ## Usage
 
 ```
-Command Line: -h
-
-      h/help              Display this help message.
-      d/dir               Directory to recursively process. This is required.
-      q/quiet             Don't output all key/value pairs to console. Default will output all key/value pairs
+      h/help              Display this help message
+      d/dir               Directory to recursively process. This is required
+      q/quiet             Don't output all key/value pairs to console. This happens by default
       t/outputType        Output type. Can be "csv" or "json"
       o/outputDir         Directory to save all output results to. Required for any file output
       f/outputFile        Filename to use when saving output. This will be appended with path and date
       b/batch             Combine all output files into one file. Supported by "csv" and "json" file types
-      c/clean-output      Clean the file output of non-visual characters, such as \\u001
+      c/clean-output      Clean the file output of non-visual characters, such as \u001
+      timezone            Specify the IANA timezone to use when using timestamps. Default is UTC
       no-colour/no-color  Don't colourise output
       no-header           Don't display the header
       u/check-update      Check for updates only
@@ -81,6 +80,8 @@ Examples: LevelDBParser.exe -d "C:\Temp\leveldb"
           LevelDBParser.exe -d "C:\Temp\leveldb" --no-colour --quiet --no-header --clean-output
           LevelDBParser.exe -d "C:\Temp\leveldb" --no-colour -b --outputType json -outputFile Evidence.json
           LevelDBParser.exe -d "C:\Temp\leveldb" -t csv -f LevelDB.csv -o Evidence -b --no-colour --quiet
+          LevelDBParser.exe -d "C:\Temp\leveldb" -t csv -o Evidence -b --timezone America/New_York
+          LevelDBParser.exe -d "C:\Temp\leveldb" -t json -o Evidence -b --timezone Local --quiet --clean-output
           LevelDBParser.exe --check-update
           LevelDBParser.exe --help
 ```
@@ -155,7 +156,7 @@ go build
 * ~~`-u/--update` command to only check for update~~ :heavy_check_mark:
 * ~~Allow optional cleaning of output of non-graphical characters~~ :heavy_check_mark:
 * ~~Batch output file (All LevelDB dumps into one file)~~ :heavy_check_mark:
-* Specify last modified timestamp timezone - default to UTC
+* ~~Specify last modified timestamp timezone - default to UTC~~ :heavy_check_mark:
 * Allow customisation of output name
 * Implement idb_cmp1 Google comparator for IndexedDB databases
 * Allow suppression of warning/error messages through command line e.g. `2>/dev/null`

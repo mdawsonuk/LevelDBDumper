@@ -13,6 +13,7 @@ var (
 	outputDir      string
 	outputFile     string
 	batch          bool
+	timezone       string
 	noColour       bool
 	noHeader       bool
 	checkForUpdate bool
@@ -59,18 +60,22 @@ func getArgs(args []string) {
 		if args[i] == "-c" || args[i] == "--clean-output" {
 			cleanOutput = true
 		}
+		if args[i] == "--timezone" && i+1 < len(args) {
+			timezone = args[i+1]
+		}
 	}
 }
 
 func printUsage() {
-	fmt.Println("      h/help              Display this help message.")
-	fmt.Println("      d/dir               Directory to recursively process. This is required.")
-	fmt.Println("      q/quiet             Don't output all key/value pairs to console. Default will output all key/value pairs")
+	fmt.Println("      h/help              Display this help message")
+	fmt.Println("      d/dir               Directory to recursively process. This is required")
+	fmt.Println("      q/quiet             Don't output all key/value pairs to console. This happens by default")
 	fmt.Println("      t/outputType        Output type. Can be \"csv\" or \"json\"")
 	fmt.Println("      o/outputDir         Directory to save all output results to. Required for any file output")
 	fmt.Println("      f/outputFile        Filename to use when saving output. This will be appended with path and date")
 	fmt.Println("      b/batch             Combine all output files into one file. Supported by \"csv\" and \"json\" file types")
 	fmt.Println("      c/clean-output      Clean the file output of non-visual characters, such as \\u001")
+	fmt.Println("      timezone            Specify the IANA timezone to use when using timestamps. Default is UTC")
 	fmt.Println("      no-colour/no-color  Don't colourise output")
 	fmt.Println("      no-header           Don't display the header")
 	fmt.Println("      u/check-update      Check for updates only")
@@ -82,6 +87,8 @@ func printUsage() {
 	fmt.Println("          LevelDBParser.exe -d \"C:\\Temp\\leveldb\" --no-colour --quiet --no-header --clean-output")
 	fmt.Println("          LevelDBParser.exe -d \"C:\\Temp\\leveldb\" --no-colour -b --outputType json -outputFile Evidence.json")
 	fmt.Println("          LevelDBParser.exe -d \"C:\\Temp\\leveldb\" -t csv -f LevelDB.csv -o Evidence -b --no-colour --quiet")
+	fmt.Println("          LevelDBParser.exe -d \"C:\\Temp\\leveldb\" -t csv -o Evidence -b --timezone America/New_York")
+	fmt.Println("          LevelDBParser.exe -d \"C:\\Temp\\leveldb\" -t json -o Evidence -b --timezone Local --quiet --clean-output")
 	fmt.Println("          LevelDBParser.exe --check-update")
 	fmt.Println("          LevelDBParser.exe --help")
 	fmt.Println()

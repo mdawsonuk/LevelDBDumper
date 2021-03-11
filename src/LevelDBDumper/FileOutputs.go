@@ -10,7 +10,8 @@ import (
 	"time"
 )
 
-const timeFormat = "2006-01-02T15:04:05"
+// See https://golang.org/src/time/format.go
+const timeFormat = "2006-01-02T15:04:05 MST"
 
 // JSONDB holds all of the JSON data for the array of databases
 type JSONDB struct {

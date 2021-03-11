@@ -158,3 +158,11 @@ func TestArgsCleanLong(t *testing.T) {
 		t.Errorf("cleanOutput was incorrect, actual: %t, expected: true", cleanOutput)
 	}
 }
+
+func TestArgsTimezone(t *testing.T) {
+	args := []string{"--timezone", "Europe/Berlin"}
+	getArgs(args)
+	if timezone != "Europe/Berlin" {
+		t.Errorf("timezone was incorrect, actual: %s, expected: Europe/Berlin", timezone)
+	}
+}
