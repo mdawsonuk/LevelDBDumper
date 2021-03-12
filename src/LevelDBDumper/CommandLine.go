@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"path/filepath"
+
+	"github.com/gookit/color"
 )
 
 var (
@@ -28,7 +30,7 @@ func getArgs(args []string) {
 		if (args[i] == "-d" || args[i] == "--dir") && i+1 < len(args) {
 			path, err := filepath.Abs(args[i+1])
 			if err != nil {
-				printLine(fmt.Sprintf("Unable to get absolute path of %s", path), Fatal)
+				color.Red.Println(fmt.Sprintf("Unable to get absolute path of %s", path))
 			} else {
 				rootPath = path
 			}

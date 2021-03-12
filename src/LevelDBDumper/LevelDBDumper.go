@@ -9,6 +9,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/gookit/color"
 	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/syndtr/goleveldb/leveldb/opt"
 )
@@ -26,6 +27,10 @@ func main() {
 }
 
 func dumpDBs(args []string) {
+
+	fd := uintptr(syscall.Stdout)
+
+	fmt.Println(color.IsTty(fd))
 
 	getArgs(args)
 
@@ -48,13 +53,13 @@ func dumpDBs(args []string) {
 	needsUpdate, latestVersion := checkUpdate()
 
 	if !needsUpdate {
-		printLine("You are using the latest version of LevelDB Dumper", Purple)
+		color.Magenta.Println("You are using the latest version of LevelDB Dumper")
 		fmt.Println()
 		if checkForUpdate {
 			os.Exit(0)
 		}
 	} else if checkForUpdate {
-		printLine(fmt.Sprintf("Version %s is now available for LevelDB Dumper - please update!", latestVersion), Purple)
+		color.Cyan.Println(fmt.Sprintf("Version %s is now available for LevelDB Dumper - please update!", latestVersion))
 		fmt.Println()
 		os.Exit(0)
 	}
@@ -63,14 +68,14 @@ func dumpDBs(args []string) {
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 	go func() {
 		<-c
-		printLine(fmt.Sprintf("Found %d results so far", len(searchResult)), Info)
-		printLine("Ctrl+C detected, quitting...", Fatal)
+		color.FgLightBlue.Println(fmt.Sprintf("Found %d results so far", len(searchResult)))
+		color.Red.Println("Ctrl+C detected, quitting...")
 		os.Exit(0)
 	}()
 
 	if rootPath == "" {
 		printUsage()
-		printLine("Missing -d argument", Fatal)
+		color.Red.Println("Missing -d argument")
 		os.Exit(1)
 	}
 
@@ -80,7 +85,7 @@ func dumpDBs(args []string) {
 		"json":
 		break
 	default:
-		printLine(fmt.Sprintf("%s is not a recognised output type. Defaulting to CSV", outputType), Warn)
+		color.Yellow.Println(fmt.Sprintf("%s is not a recognised output type. Defaulting to CSV", outputType))
 		fmt.Println()
 		outputType = "csv"
 	}
@@ -88,23 +93,23 @@ func dumpDBs(args []string) {
 	dbPresent, _ := fileExists(rootPath)
 
 	if !dbPresent {
-		printLine(fmt.Sprintf("The path %s doesn't exist", rootPath), Fatal)
+		color.Red.Println(fmt.Sprintf("The path %s doesn't exist", rootPath))
 		fmt.Println()
 		os.Exit(2)
 	}
 
 	testFile, err := os.Open(rootPath)
 	if err != nil {
-		printLine(fmt.Sprintf("Unable to open %s - make sure you haven't escaped the path with \\\"", rootPath), Warn)
+		color.Yellow.Println(fmt.Sprintf("Unable to open %s - make sure you haven't escaped the path with \\\"", rootPath))
 		fmt.Println()
 		os.Exit(2)
 	}
 	defer testFile.Close()
 
 	if !isAdmin() {
-		printLine("You should run LevelDB Dumper with root/Administrator privileges", Fatal)
+		color.Red.Println("You should run LevelDB Dumper with root/Administrator privileges")
 	} else {
-		printLine("Running LevelDB Dumper with root/Administrator privileges", Info)
+		color.FgLightBlue.Println("Running LevelDB Dumper with root/Administrator privileges")
 	}
 	fmt.Println()
 
@@ -114,11 +119,11 @@ func dumpDBs(args []string) {
 	readDBs()
 
 	elapsed := time.Now().Sub(start)
-	printLine(fmt.Sprintf("Completed search in %v", elapsed), Info)
+	color.FgLightBlue.Println(fmt.Sprintf("Completed search in %v", elapsed))
 	fmt.Println()
 
 	if needsUpdate {
-		printLine(fmt.Sprintf("Version %s is now available for LevelDB Dumper - please update!", latestVersion), Purple)
+		color.Magenta.Println(fmt.Sprintf("Version %s is now available for LevelDB Dumper - please update!", latestVersion))
 		fmt.Println()
 	}
 
@@ -139,13 +144,18 @@ func searchForDBs() {
 		fmt.Println()
 	}
 
-	printLine(fmt.Sprintf("Searching for LevelDB databases from %s took %v", rootPath, elapsed), Info)
+	color.FgLightBlue.Println(fmt.Sprintf("Searching for LevelDB databases from %s took %v", rootPath, elapsed))
 	fmt.Println()
 
 	if len(searchResult) > 0 {
-		printLine(fmt.Sprintf("%d LevelDB databases found", len(searchResult)), Warn)
+		if len(searchResult) == 1 {
+			color.Yellow.Println("1 LevelDB database found")
+		} else {
+			color.Yellow.Println(fmt.Sprintf("%d LevelDB databases found", len(searchResult)))
+		}
+
 	} else {
-		printLine("0 LevelDB databases found", Fatal)
+		color.Red.Println("0 LevelDB databases found")
 	}
 	fmt.Println()
 }
@@ -161,7 +171,7 @@ func readDBs() {
 func findFile(path string, fileInfo os.FileInfo, err error) error {
 	if err != nil {
 		if !quiet {
-			printLine(fmt.Sprintf("Access denied for %s", path), Warn)
+			color.Yellow.Println(fmt.Sprintf("Access denied for %s", path))
 		}
 		return nil
 	}
@@ -182,7 +192,7 @@ func findFile(path string, fileInfo os.FileInfo, err error) error {
 			if len(files) > 0 {
 				searchResult = append(searchResult, absolute)
 				if !quiet {
-					printLine(fmt.Sprintf("Found database at %s", absolute), Purple)
+					color.Magenta.Println(fmt.Sprintf("Found database at %s", absolute))
 				}
 			}
 		}
@@ -197,7 +207,7 @@ func openDb(dbPath string) {
 	if noColour {
 		fmt.Println("Opening DB at", dbPath)
 	} else {
-		fmt.Println(Info("Opening DB at ", Warn(dbPath)))
+		fmt.Println(fmt.Sprintf("%s %s", color.FgWhite.Render("Opening DB at"), color.FgYellow.Render(dbPath)))
 	}
 
 	options := &opt.Options{
@@ -209,7 +219,7 @@ func openDb(dbPath string) {
 
 	switch comparator {
 	case "idb_cmp1":
-		printLine("IndexedDB idb_cmp1 comparator not yet implemented, results will not be output", Fatal)
+		color.Red.Println("IndexedDB idb_cmp1 comparator not yet implemented, results will not be output")
 		options.Comparer = idbCmp1{}
 		fmt.Println()
 		return
@@ -223,7 +233,7 @@ func openDb(dbPath string) {
 	db, err := leveldb.OpenFile(dbPath, options)
 
 	if err != nil {
-		printLine(fmt.Sprintf("Could not open DB: %s", err.Error()), Fatal)
+		color.Red.Println(fmt.Sprintf("Could not open DB: %s", err.Error()))
 		fmt.Println()
 		return
 	}
@@ -246,7 +256,7 @@ func openDb(dbPath string) {
 		loc, err = time.LoadLocation(timezone)
 		checkError(err)
 		if err != nil {
-			printLine("Defaulting to using UTC timezone", Warn)
+			color.Yellow.Println("Defaulting to using UTC timezone")
 			fmt.Println()
 			loc, _ = time.LoadLocation("UTC")
 		}
@@ -263,8 +273,8 @@ func openDb(dbPath string) {
 
 		byteValue, err := db.Get([]byte(key), nil)
 		if err != nil {
-			printLine(fmt.Sprintf("Error reading Key: %s", keyName), Fatal)
-			printLine(err.Error(), Fatal)
+			color.Red.Println(fmt.Sprintf("Error reading Key: %s", keyName))
+			color.Red.Println(err.Error())
 			return
 		}
 		value := string(byteValue)
@@ -280,7 +290,7 @@ func openDb(dbPath string) {
 	if !quiet {
 		if len(database.keys) > 0 {
 			if !quiet {
-				printLine(fmt.Sprintf("%-56vValue:", "Key:"), Info)
+				color.FgLightBlue.Println(fmt.Sprintf("%-58vValue:", "Key:"))
 			}
 			for index := range database.keys {
 				escapedKey := removeControlChars(database.keys[index])     //fmt.Sprintf("%q", keyName)
@@ -289,19 +299,19 @@ func openDb(dbPath string) {
 					if noColour {
 						fmt.Printf("%-53v | "+escapedValue[:80]+"...\n", escapedKey)
 					} else {
-						fmt.Printf("%-64v | "+escapedValue[:80]+"...\n", Warn(escapedKey))
+						fmt.Printf("%-64v | "+escapedValue[:80]+"...\n", color.Yellow.Render(escapedKey))
 					}
 				} else {
 					if noColour {
 						fmt.Printf("%-53v | "+escapedValue+"\n", escapedKey)
 					} else {
-						fmt.Printf("%-64v | "+escapedValue+"\n", Warn(escapedKey))
+						fmt.Printf("%-64v | "+escapedValue+"\n", color.Yellow.Render(escapedKey))
 					}
 
 				}
 			}
 		} else {
-			printLine("Parsed database but no key/value pairs were found", Warn)
+			color.Yellow.Println("Parsed database but no key/value pairs were found")
 		}
 	}
 
@@ -313,7 +323,7 @@ func openDb(dbPath string) {
 	}
 
 	elapsed := time.Now().Sub(start)
-	printLine(fmt.Sprintf("Dumping LevelDB database took %s", elapsed), Info)
+	color.FgLightBlue.Println(fmt.Sprintf("Dumping LevelDB database took %s", elapsed))
 	fmt.Println()
 }
 

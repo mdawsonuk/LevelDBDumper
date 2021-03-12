@@ -4,6 +4,8 @@
   <p align="center">
   <a href="https://travis-ci.com/github/mdawsonuk/LevelDBDumper" alt="Travis CI">
 		<img src="https://img.shields.io/travis/com/mdawsonuk/LevelDBDumper?style=flat-square" /></a>
+  <a href="https://goreportcard.com/report/github.com/mdawsonuk/LevelDBDumper" alt="Travis CI">
+		<img src="https://goreportcard.com/badge/github.com/mdawsonuk/LevelDBDumper?style=flat-square" /></a>
   <a href="LICENSE" alt="Licence">
 		<img src="https://img.shields.io/github/license/mdawsonuk/LevelDBDumper?style=flat-square" /></a>
 	<a href="https://github.com/mdawsonuk/LevelDBDumper/releases" alt="Releases">
@@ -100,7 +102,7 @@ To get a local copy up and running follow these simple steps.
 
 ### Prerequisites
 
-LevelDB is written in Go, so it can be run cross-platform. If you are building from source, you will need to [install Golang](https://golang.org/doc/install)
+LevelDB Dumper is written in Go, so it can be run cross-platform. If you are building from source, you will need to [install Golang](https://golang.org/doc/install)
 
 ### Installation
 
@@ -123,6 +125,7 @@ git clone https://github.com/mdawsonuk/LevelDBDumper.git
 ```sh
 go get github.com/syndtr/goleveldb/leveldb
 go get github.com/hashicorp/go-version
+go get github.com/gookit/color
 ```
 
 If building on Windows, get the Windows sys package

@@ -5,6 +5,7 @@ package main
 import (
 	"fmt"
 
+	"github.com/gookit/color"
 	"golang.org/x/sys/windows"
 )
 
@@ -14,7 +15,7 @@ func isAdmin() bool {
 
 	err := windows.AllocateAndInitializeSid(&windows.SECURITY_NT_AUTHORITY, 2, windows.SECURITY_BUILTIN_DOMAIN_RID, windows.DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0, &sid)
 	if err != nil {
-		printLine(fmt.Sprintf("SID Error: %s", err), Fatal)
+		color.Red.Println(fmt.Sprintf("SID Error: %s", err))
 		return false
 	}
 
@@ -22,7 +23,7 @@ func isAdmin() bool {
 
 	member, err := token.IsMember(sid)
 	if err != nil {
-		printLine(fmt.Sprintf("Token Membership Error: %s", err), Fatal)
+		color.Red.Println(fmt.Sprintf("Token Membership Error: %s", err))
 		return false
 	}
 	return member
