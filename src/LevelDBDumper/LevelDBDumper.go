@@ -28,10 +28,6 @@ func main() {
 
 func dumpDBs(args []string) {
 
-	fd := uintptr(syscall.Stdout)
-
-	fmt.Println(color.IsTty(fd))
-
 	getArgs(args)
 
 	if !noHeader {
