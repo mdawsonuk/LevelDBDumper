@@ -20,7 +20,7 @@ func TestFilewalkLevelDBDatabaseTopLevelDatabase(t *testing.T) {
 		t.Errorf("filewalk produced error")
 	}
 	if len(searchResult) != 1 {
-		t.Errorf("Database exists in current directory, acual: %d, expected: 0", len(searchResult))
+		t.Errorf("Database exists in current directory, actual: %d, expected: 0", len(searchResult))
 	}
 
 	os.Remove("CURRENT")

@@ -4,8 +4,10 @@
   <p align="center">
   <a href="https://travis-ci.com/github/mdawsonuk/LevelDBDumper" alt="Travis CI">
 		<img src="https://img.shields.io/travis/com/mdawsonuk/LevelDBDumper?style=flat-square" /></a>
-  <a href="https://goreportcard.com/report/github.com/mdawsonuk/LevelDBDumper" alt="Travis CI">
+  <a href="https://goreportcard.com/report/github.com/mdawsonuk/LevelDBDumper" alt="Go Report Card">
 		<img src="https://goreportcard.com/badge/github.com/mdawsonuk/LevelDBDumper?style=flat-square" /></a>
+  <a href="#" alt="Go Version">
+		<img src="https://img.shields.io/github/go-mod/go-version/mdawsonuk/LevelDBDumper?style=flat-square" /></a>
   <a href="LICENSE" alt="Licence">
 		<img src="https://img.shields.io/github/license/mdawsonuk/LevelDBDumper?style=flat-square" /></a>
 	<a href="https://github.com/mdawsonuk/LevelDBDumper/releases" alt="Releases">

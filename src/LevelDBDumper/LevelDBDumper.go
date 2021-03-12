@@ -15,7 +15,7 @@ import (
 )
 
 // VERSION of LevelDB Dumper
-const VERSION string = "3.0.0-alpha.2"
+const VERSION string = "3.0.0-alpha.3"
 
 var (
 	searchResult    []string
