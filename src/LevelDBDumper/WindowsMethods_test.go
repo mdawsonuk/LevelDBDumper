@@ -2,11 +2,20 @@
 
 package main
 
-import "testing"
+import (
+	"os"
+	"testing"
+)
 
 func TestNotAdministrator(t *testing.T) {
 	isAdmin := isAdmin()
-	if isAdmin {
-		t.Errorf("isAdmin, actual: %t, expected: false", isAdmin)
+	if os.Getenv("TRAVIS") == "true" {
+		if !isAdmin {
+			t.Errorf("isAdmin, actual: %t, expected: true", isAdmin)
+		}
+	} else {
+		if isAdmin {
+			t.Errorf("isAdmin, actual: %t, expected: false", isAdmin)
+		}
 	}
 }

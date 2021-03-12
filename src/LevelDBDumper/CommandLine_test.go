@@ -87,22 +87,6 @@ func TestArgsOutputFileLong(t *testing.T) {
 	}
 }
 
-func TestArgsNoColour(t *testing.T) {
-	args := []string{"--no-colour"}
-	getArgs(args)
-	if noColour != true {
-		t.Errorf("noColour was incorrect, actual: %t, expected: true", noColour)
-	}
-}
-
-func TestArgsNoColor(t *testing.T) {
-	args := []string{"--no-color"}
-	getArgs(args)
-	if noColour != true {
-		t.Errorf("noColour was incorrect, actual: %t, expected: true", noColour)
-	}
-}
-
 func TestArgsNoHeader(t *testing.T) {
 	args := []string{"--no-header"}
 	getArgs(args)

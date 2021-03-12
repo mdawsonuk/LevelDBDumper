@@ -200,11 +200,7 @@ func findFile(path string, fileInfo os.FileInfo, err error) error {
 
 func openDb(dbPath string) {
 
-	if noColour {
-		fmt.Println("Opening DB at", dbPath)
-	} else {
-		fmt.Println(fmt.Sprintf("%s %s", color.FgWhite.Render("Opening DB at"), color.FgYellow.Render(dbPath)))
-	}
+	fmt.Println(fmt.Sprintf("%s %s", color.FgWhite.Render("Opening DB at"), color.FgYellow.Render(dbPath)))
 
 	options := &opt.Options{
 		ErrorIfMissing: true,
@@ -292,18 +288,9 @@ func openDb(dbPath string) {
 				escapedKey := removeControlChars(database.keys[index])     //fmt.Sprintf("%q", keyName)
 				escapedValue := removeControlChars(database.values[index]) //fmt.Sprintf("%q", value)
 				if len(escapedValue) > 80 {
-					if noColour {
-						fmt.Printf("%-53v | "+escapedValue[:80]+"...\n", escapedKey)
-					} else {
-						fmt.Printf("%-64v | "+escapedValue[:80]+"...\n", color.Yellow.Render(escapedKey))
-					}
+					fmt.Printf("%-64v | "+escapedValue[:80]+"...\n", color.Yellow.Render(escapedKey))
 				} else {
-					if noColour {
-						fmt.Printf("%-53v | "+escapedValue+"\n", escapedKey)
-					} else {
-						fmt.Printf("%-64v | "+escapedValue+"\n", color.Yellow.Render(escapedKey))
-					}
-
+					fmt.Printf("%-64v | "+escapedValue+"\n", color.Yellow.Render(escapedKey))
 				}
 			}
 		} else {

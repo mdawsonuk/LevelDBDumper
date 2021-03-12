@@ -10,6 +10,12 @@ import (
 )
 
 func checkUpdate() (bool, string) {
+	currentVersion, _ := version.NewSemver(VERSION)
+
+	if currentVersion.Prerelease() != "" {
+		fmt.Println("Prerelease")
+	}
+
 	url := "https://api.github.com/repos/mdawsonuk/LevelDBDumper/releases/latest"
 
 	resp, err := http.Get(url)
@@ -27,7 +33,6 @@ func checkUpdate() (bool, string) {
 	// Drop the v from the tag
 	tag := fmt.Sprintf("%s", results["tag_name"])[1:]
 
-	currentVersion, _ := version.NewSemver(VERSION)
 	latestVersion, _ := version.NewSemver(tag)
 
 	return currentVersion.LessThan(latestVersion), tag
