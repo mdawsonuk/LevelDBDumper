@@ -72,7 +72,7 @@ _This works on Local Storage LevelDBs - support for IndexedDBs using the idb_cmp
       f/outputFile        Filename to use when saving output. This will be appended with path and date
       b/batch             Combine all output files into one file. Supported by "csv" and "json" file types
       c/clean-output      Clean the file output of non-visual characters, such as \u001
-      timezone            Specify the IANA timezone to use when using timestamps. Default is UTC
+      z/timezone          Specify the IANA timezone to use when using timestamps. Default is UTC
       no-header           Don't display the header
       u/check-update      Check for updates only
 
@@ -84,7 +84,7 @@ Examples: LevelDBParser.exe -d "C:\Temp\leveldb"
           LevelDBParser.exe -d "C:\Temp\leveldb" -b --outputType json -outputFile Evidence.json
           LevelDBParser.exe -d "C:\Temp\leveldb" -t csv -f LevelDB.csv -o Evidence -b --quiet
           LevelDBParser.exe -d "C:\Temp\leveldb" -t csv -o Evidence -b --timezone America/New_York
-          LevelDBParser.exe -d "C:\Temp\leveldb" -t json -o Evidence -b --timezone Local --quiet --clean-output
+          LevelDBParser.exe -d "C:\Temp\leveldb" -t json -o Evidence -b -z Local --quiet --clean-output
           LevelDBParser.exe --check-update
           LevelDBParser.exe --help
 ```

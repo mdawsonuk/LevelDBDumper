@@ -58,7 +58,7 @@ func getArgs(args []string) {
 		if args[i] == "-c" || args[i] == "--clean-output" {
 			cleanOutput = true
 		}
-		if args[i] == "--timezone" && i+1 < len(args) {
+		if (args[i] == "-z" || args[i] == "--timezone") && i+1 < len(args) {
 			timezone = args[i+1]
 		}
 	}
@@ -73,7 +73,7 @@ func printUsage() {
 	fmt.Println("      f/outputFile        Filename to use when saving output. This will be appended with path and date")
 	fmt.Println("      b/batch             Combine all output files into one file. Supported by \"csv\" and \"json\" file types")
 	fmt.Println("      c/clean-output      Clean the file output of non-visual characters, such as \\u001")
-	fmt.Println("      timezone            Specify the IANA timezone to use when using timestamps. Default is UTC")
+	fmt.Println("      z/timezone          Specify the IANA timezone to use when using timestamps. Default is UTC")
 	fmt.Println("      no-header           Don't display the header")
 	fmt.Println("      u/check-update      Check for updates only")
 	fmt.Println()
@@ -85,7 +85,7 @@ func printUsage() {
 	fmt.Println("          LevelDBParser.exe -d \"C:\\Temp\\leveldb\" -b --outputType json -outputFile Evidence.json")
 	fmt.Println("          LevelDBParser.exe -d \"C:\\Temp\\leveldb\" -t csv -f LevelDB.csv -o Evidence -b --quiet")
 	fmt.Println("          LevelDBParser.exe -d \"C:\\Temp\\leveldb\" -t csv -o Evidence -b --timezone America/New_York")
-	fmt.Println("          LevelDBParser.exe -d \"C:\\Temp\\leveldb\" -t json -o Evidence -b --timezone Local --quiet --clean-output")
+	fmt.Println("          LevelDBParser.exe -d \"C:\\Temp\\leveldb\" -t json -o Evidence -b -z Local --quiet --clean-output")
 	fmt.Println("          LevelDBParser.exe --check-update")
 	fmt.Println("          LevelDBParser.exe --help")
 	fmt.Println()

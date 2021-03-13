@@ -29,6 +29,7 @@ func TestArgsQuietShort(t *testing.T) {
 	if quiet != true {
 		t.Error("quiet was incorrect, actual: false, expected: true")
 	}
+	quiet = false
 }
 
 func TestArgsQuietLong(t *testing.T) {
@@ -37,6 +38,7 @@ func TestArgsQuietLong(t *testing.T) {
 	if quiet != true {
 		t.Error("quiet was incorrect, actual: false, expected: true")
 	}
+	quiet = false
 }
 
 func TestArgsOutputTypeShort(t *testing.T) {
@@ -143,10 +145,34 @@ func TestArgsCleanLong(t *testing.T) {
 	}
 }
 
-func TestArgsTimezone(t *testing.T) {
+func TestArgsTimezoneShort(t *testing.T) {
+	args := []string{"-z", "America/New_York"}
+	getArgs(args)
+	if timezone != "America/New_York" {
+		t.Errorf("timezone was incorrect, actual: %s, expected: America/New_York", timezone)
+	}
+}
+
+func TestArgsTimezoneLong(t *testing.T) {
 	args := []string{"--timezone", "Europe/Berlin"}
 	getArgs(args)
 	if timezone != "Europe/Berlin" {
 		t.Errorf("timezone was incorrect, actual: %s, expected: Europe/Berlin", timezone)
+	}
+}
+
+func TestArgsBatchShort(t *testing.T) {
+	args := []string{"-b"}
+	getArgs(args)
+	if batch != true {
+		t.Errorf("batch was incorrect, actual: %t, expected: true", batch)
+	}
+}
+
+func TestArgsBatchLong(t *testing.T) {
+	args := []string{"--batch"}
+	getArgs(args)
+	if batch != true {
+		t.Errorf("batch was incorrect, actual: %t, expected: true", batch)
 	}
 }
