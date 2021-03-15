@@ -1,9 +1,39 @@
 package main
 
 import (
+	"bytes"
+	"io"
 	"os"
+	"strings"
 	"testing"
 )
+
+func TestPrintUsage(t *testing.T) {
+	old := os.Stdout // keep backup of the real stdout
+	r, w, _ := os.Pipe()
+	os.Stdout = w
+
+	printUsage()
+
+	outC := make(chan string)
+	// copy the output in a separate goroutine so printing can't block indefinitely
+	go func() {
+		var buf bytes.Buffer
+		io.Copy(&buf, r)
+		outC <- buf.String()
+	}()
+
+	w.Close()
+	os.Stdout = old // restoring the real stdout
+	out := <-outC
+
+	if !strings.Contains(out, "h/help") {
+		t.Errorf("Output does not contain string \"h/help\": %s", out)
+	}
+	if !strings.Contains(out, "Display this help message") {
+		t.Errorf("Output does not contain string \"Display this help message\", output was instead:\n%s", out)
+	}
+}
 
 func TestArgsRootPathShort(t *testing.T) {
 	args := []string{"-d", "."}

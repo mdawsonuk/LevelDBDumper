@@ -43,7 +43,7 @@ func dumpDBs(args []string) {
 	fmt.Println("Command Line:", strings.Join(args[1:], " "))
 	fmt.Println()
 
-	needsUpdate, latestVersion := checkUpdate()
+	needsUpdate, latestVersion := checkUpdate(VERSION)
 
 	if !needsUpdate {
 		color.Magenta.Println("You are using the latest version of LevelDB Dumper")
