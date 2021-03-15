@@ -64,7 +64,6 @@ func createCsvOutput(db ParsedDB) {
 	if err != nil {
 		return
 	}
-	defer file.Close()
 
 	csvWriter := csv.NewWriter(file)
 	csvWriter.Write([]string{"Key", "Value"})
@@ -74,6 +73,7 @@ func createCsvOutput(db ParsedDB) {
 		checkError(err)
 		csvWriter.Flush()
 	}
+	file.Close()
 }
 
 func createBatchCsvOutput() {
@@ -83,7 +83,6 @@ func createBatchCsvOutput() {
 	if err != nil {
 		return
 	}
-	defer file.Close()
 
 	csvWriter := csv.NewWriter(file)
 	csvWriter.Write([]string{"Timestamp (Last Modified)", "Key", "Value", "Path"})
@@ -95,6 +94,7 @@ func createBatchCsvOutput() {
 			csvWriter.Flush()
 		}
 	}
+	file.Close()
 }
 
 func createJSONOutput(db ParsedDB) {
@@ -112,11 +112,11 @@ func createJSONOutput(db ParsedDB) {
 	jsonFileName := fmt.Sprintf("%v%v%v%v%v%v_%v_LevelDBDumper.json", year, int(month), day, timeNow.Hour(), timeNow.Minute(), timeNow.Second(), escapedPath)
 	file, err := os.Create(filepath.Join(outputDir, jsonFileName))
 	checkError(err)
-	defer file.Close()
 	if err != nil {
 		return
 	}
 	file.Write(json)
+	file.Close()
 }
 
 func createBatchJSONOutput() {
@@ -135,9 +135,9 @@ func createBatchJSONOutput() {
 	jsonFileName := "LevelDBDumper.json"
 	file, err := os.Create(filepath.Join(outputDir, jsonFileName))
 	checkError(err)
-	defer file.Close()
 	if err != nil {
 		return
 	}
 	file.Write(json)
+	file.Close()
 }

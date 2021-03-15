@@ -95,9 +95,10 @@ func dumpDBs(args []string) {
 	if err != nil {
 		color.Yellow.Println(fmt.Sprintf("Unable to open %s - make sure you haven't escaped the path with \\\"", rootPath))
 		fmt.Println()
+		testFile.Close()
 		os.Exit(2)
 	}
-	defer testFile.Close()
+	testFile.Close()
 
 	if !isAdmin() {
 		color.Red.Println("You should run LevelDB Dumper with root/Administrator privileges")

@@ -132,9 +132,8 @@ func openDb(dbPath string) {
 func getComparator(dbPath string) string {
 	files, err := filepath.Glob(filepath.Join(dbPath, "MANIFEST-*"))
 	checkError(err)
-	manifestPath := files[0]
 
-	f, err := os.Open(manifestPath)
+	f, err := os.Open(files[0])
 	contents := make([]byte, 32)
 	// The string containing the comparator type is always 9 bytes in
 	f.Seek(9, 0)
