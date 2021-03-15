@@ -37,14 +37,8 @@ func checkUpdatePreleaseStream(ver string) (*version.Version, string) {
 
 	json.Unmarshal(body, &results)
 
-	tag := ""
-	for _, release := range results {
-		if release["prerelease"] == true {
-			// Drop the v from the tag
-			tag = fmt.Sprintf("%s", release["tag_name"])[1:]
-			break
-		}
-	}
+	// Drop the v from the tag
+	tag := fmt.Sprintf("%s", results[0]["tag_name"])[1:]
 
 	latestVersion, _ := version.NewSemver(tag)
 

@@ -7,6 +7,7 @@ import (
 )
 
 func TestFilewalkLevelDBDatabaseTopLevelDatabase(t *testing.T) {
+	rootPath = "."
 	searchResult = []string{}
 
 	currentFile, _ := os.Create("CURRENT")

@@ -47,13 +47,11 @@ func dumpDBs(args []string) {
 
 	if !needsUpdate {
 		color.Magenta.Println("You are using the latest version of LevelDB Dumper")
-		fmt.Println()
 		if checkForUpdate {
 			os.Exit(0)
 		}
 	} else if checkForUpdate {
 		color.Cyan.Println(fmt.Sprintf("Version %s is now available for LevelDB Dumper - please update!", latestVersion))
-		fmt.Println()
 		os.Exit(0)
 	}
 
@@ -87,14 +85,12 @@ func dumpDBs(args []string) {
 
 	if !dbPresent {
 		color.Red.Println(fmt.Sprintf("The path %s doesn't exist", rootPath))
-		fmt.Println()
 		os.Exit(2)
 	}
 
 	testFile, err := os.Open(rootPath)
 	if err != nil {
 		color.Yellow.Println(fmt.Sprintf("Unable to open %s - make sure you haven't escaped the path with \\\"", rootPath))
-		fmt.Println()
 		testFile.Close()
 		os.Exit(2)
 	}
@@ -118,11 +114,9 @@ func dumpDBs(args []string) {
 
 	elapsed := time.Now().Sub(start)
 	color.FgLightBlue.Println(fmt.Sprintf("Completed search in %v", elapsed))
-	fmt.Println()
 
 	if needsUpdate {
 		color.Magenta.Println(fmt.Sprintf("Version %s is now available for LevelDB Dumper - please update!", latestVersion))
-		fmt.Println()
 	}
 
 	os.Exit(0)

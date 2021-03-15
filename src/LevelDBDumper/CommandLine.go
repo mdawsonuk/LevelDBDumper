@@ -88,5 +88,7 @@ func printUsage() {
 	fmt.Println("          LevelDBParser.exe -d \"C:\\Temp\\leveldb\" -t json -o Evidence -b -z Local --quiet --clean-output")
 	fmt.Println("          LevelDBParser.exe --check-update")
 	fmt.Println("          LevelDBParser.exe --help")
-	fmt.Println()
+	if !help {
+		fmt.Println()
+	}
 }

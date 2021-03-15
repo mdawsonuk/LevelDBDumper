@@ -42,15 +42,17 @@ func TestArgsRootPathShort(t *testing.T) {
 	if rootPath != path {
 		t.Errorf("rootPath was incorrect, actual: %s, expected: %s", rootPath, path)
 	}
+	rootPath = ""
 }
 
 func TestArgsRootPathLong(t *testing.T) {
-	args := []string{"-dir", "."}
+	args := []string{"--dir", "."}
 	getArgs(args)
 	path, _ := os.Getwd()
 	if rootPath != path {
 		t.Errorf("rootPath was incorrect, actual: %s, expected: %s", rootPath, path)
 	}
+	rootPath = ""
 }
 
 func TestArgsQuietShort(t *testing.T) {
@@ -77,14 +79,16 @@ func TestArgsOutputTypeShort(t *testing.T) {
 	if outputType != "json" {
 		t.Errorf("quiet was incorrect, actual: %s, expected: json", outputType)
 	}
+	outputType = ""
 }
 
 func TestArgsOutputTypeLong(t *testing.T) {
-	args := []string{"-outputType", "json"}
+	args := []string{"--outputType", "json"}
 	getArgs(args)
 	if outputType != "json" {
-		t.Errorf("quiet was incorrect, actual: %s, expected: json", outputType)
+		t.Errorf("outputType was incorrect, actual: %s, expected: json", outputType)
 	}
+	outputType = ""
 }
 
 func TestArgsOutputDirShort(t *testing.T) {
@@ -93,6 +97,7 @@ func TestArgsOutputDirShort(t *testing.T) {
 	if outputDir != "test" {
 		t.Errorf("outputDir was incorrect, actual: %s, expected: test", outputDir)
 	}
+	outputDir = ""
 }
 
 func TestArgsOutputDirLong(t *testing.T) {
@@ -101,6 +106,7 @@ func TestArgsOutputDirLong(t *testing.T) {
 	if outputDir != "test" {
 		t.Errorf("outputDir was incorrect, actual: %s, expected: test", outputDir)
 	}
+	outputDir = ""
 }
 
 func TestArgsOutputFileShort(t *testing.T) {
@@ -109,6 +115,7 @@ func TestArgsOutputFileShort(t *testing.T) {
 	if outputFile != "test" {
 		t.Errorf("outputFile was incorrect, actual: %s, expected: test", outputFile)
 	}
+	outputFile = ""
 }
 
 func TestArgsOutputFileLong(t *testing.T) {
@@ -117,6 +124,7 @@ func TestArgsOutputFileLong(t *testing.T) {
 	if outputFile != "test" {
 		t.Errorf("outputFile was incorrect, actual: %s, expected: test", outputFile)
 	}
+	outputFile = ""
 }
 
 func TestArgsNoHeader(t *testing.T) {
@@ -133,6 +141,7 @@ func TestArgsUpdateShort(t *testing.T) {
 	if checkForUpdate != true {
 		t.Errorf("checkForUpdate was incorrect, actual: %t, expected: true", checkForUpdate)
 	}
+	checkForUpdate = false
 }
 
 func TestArgsUpdateLong(t *testing.T) {
@@ -141,6 +150,7 @@ func TestArgsUpdateLong(t *testing.T) {
 	if checkForUpdate != true {
 		t.Errorf("checkForUpdate was incorrect, actual: %t, expected: true", checkForUpdate)
 	}
+	checkForUpdate = false
 }
 
 func TestArgsHelpShort(t *testing.T) {
@@ -149,6 +159,7 @@ func TestArgsHelpShort(t *testing.T) {
 	if help != true {
 		t.Errorf("help was incorrect, actual: %t, expected: true", help)
 	}
+	help = false
 }
 
 func TestArgsHelpLong(t *testing.T) {
@@ -157,6 +168,7 @@ func TestArgsHelpLong(t *testing.T) {
 	if help != true {
 		t.Errorf("help was incorrect, actual: %t, expected: true", help)
 	}
+	help = false
 }
 
 func TestArgsCleanShort(t *testing.T) {
@@ -165,6 +177,7 @@ func TestArgsCleanShort(t *testing.T) {
 	if cleanOutput != true {
 		t.Errorf("cleanOutput was incorrect, actual: %t, expected: true", cleanOutput)
 	}
+	cleanOutput = false
 }
 
 func TestArgsCleanLong(t *testing.T) {
@@ -173,6 +186,7 @@ func TestArgsCleanLong(t *testing.T) {
 	if cleanOutput != true {
 		t.Errorf("cleanOutput was incorrect, actual: %t, expected: true", cleanOutput)
 	}
+	cleanOutput = false
 }
 
 func TestArgsTimezoneShort(t *testing.T) {
@@ -181,6 +195,7 @@ func TestArgsTimezoneShort(t *testing.T) {
 	if timezone != "America/New_York" {
 		t.Errorf("timezone was incorrect, actual: %s, expected: America/New_York", timezone)
 	}
+	timezone = ""
 }
 
 func TestArgsTimezoneLong(t *testing.T) {
@@ -189,6 +204,7 @@ func TestArgsTimezoneLong(t *testing.T) {
 	if timezone != "Europe/Berlin" {
 		t.Errorf("timezone was incorrect, actual: %s, expected: Europe/Berlin", timezone)
 	}
+	timezone = ""
 }
 
 func TestArgsBatchShort(t *testing.T) {
@@ -197,6 +213,7 @@ func TestArgsBatchShort(t *testing.T) {
 	if batch != true {
 		t.Errorf("batch was incorrect, actual: %t, expected: true", batch)
 	}
+	batch = false
 }
 
 func TestArgsBatchLong(t *testing.T) {
@@ -205,4 +222,5 @@ func TestArgsBatchLong(t *testing.T) {
 	if batch != true {
 		t.Errorf("batch was incorrect, actual: %t, expected: true", batch)
 	}
+	batch = false
 }
