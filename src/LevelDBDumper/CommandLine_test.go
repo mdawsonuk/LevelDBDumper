@@ -28,7 +28,7 @@ func TestPrintUsage(t *testing.T) {
 	out := <-outC
 
 	if !strings.Contains(out, "h/help") {
-		t.Errorf("Output does not contain string \"h/help\": %s", out)
+		t.Errorf("Output does not contain string \"h/help\", output was instead:\n%s", out)
 	}
 	if !strings.Contains(out, "Display this help message") {
 		t.Errorf("Output does not contain string \"Display this help message\", output was instead:\n%s", out)

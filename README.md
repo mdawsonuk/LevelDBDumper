@@ -129,7 +129,7 @@ go get github.com/hashicorp/go-version
 go get github.com/gookit/color
 ```
 
-If building on Windows, get the Windows sys package
+If building for/on Windows, get the Windows sys package
 ```sh
 go get golang.org/x/sys/windows
 ```
