@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"time"
+	"unicode"
 
 	"github.com/gookit/color"
 	"github.com/syndtr/goleveldb/leveldb"
@@ -20,6 +21,7 @@ func readDBs() {
 func openDb(dbPath string) {
 
 	fmt.Println(fmt.Sprintf("%s %s", color.FgWhite.Render("Opening DB at"), color.FgYellow.Render(dbPath)))
+	fmt.Println()
 
 	options := &opt.Options{
 		ErrorIfMissing: true,
@@ -34,8 +36,12 @@ func openDb(dbPath string) {
 		options.Comparer = idbCmp1{}
 		fmt.Println()
 		return
+	case "leveldb.BytewiseComparator":
+		color.FgLightBlue.Println("Using leveldb.BytewiseComparator")
+		break
 	default:
-		// Just leave it, as default is leveldb.bitwisecomparator
+		// Default is leveldb.BytewiseComparator
+		fmt.Println(fmt.Sprintf("%s %s", color.FgWhite.Render("Using unrecognised comparator:"), color.FgYellow.Render(comparator)))
 		break
 	}
 
@@ -56,6 +62,9 @@ func openDb(dbPath string) {
 
 	// TODO: If you get created time, either use directory or LOG file
 	files, err := filepath.Glob(filepath.Join(dbPath, "MANIFEST-*"))
+	if err != nil {
+		color.Red.Println(fmt.Sprintf("Could not load MANIFEST file: %s", err.Error()))
+	}
 	checkError(err)
 	manifestPath := files[0]
 	info, err := os.Stat(manifestPath)
@@ -65,9 +74,8 @@ func openDb(dbPath string) {
 	if timezone != "" {
 		// Display the dates in UTC
 		loc, err = time.LoadLocation(timezone)
-		checkError(err)
 		if err != nil {
-			color.Yellow.Println("Defaulting to using UTC timezone")
+			color.Yellow.Println("Unable to load", timezone, "defaulting to using UTC timezone")
 			fmt.Println()
 			loc, _ = time.LoadLocation("UTC")
 		}
@@ -134,6 +142,9 @@ func getComparator(dbPath string) string {
 	checkError(err)
 
 	f, err := os.Open(files[0])
+	if !quiet {
+		fmt.Println("Using", files[0], "to parse comparator")
+	}
 	contents := make([]byte, 32)
 	// The string containing the comparator type is always 9 bytes in
 	f.Seek(9, 0)
@@ -141,11 +152,13 @@ func getComparator(dbPath string) string {
 	f.Close()
 
 	for i, b := range contents {
-		// Read until we reach the 0x02 byte at the end of the comparator
-		if b == 0x02 {
+		// Read until we reach the first non-graphic byte, identifying the end of the comparator string
+		if !unicode.IsGraphic(rune(b)) {
 			return string(contents[:i])
 		}
 	}
+
+	color.Red.Println("Unable to parse comparator from", string(contents))
 
 	return "Unknown"
 }

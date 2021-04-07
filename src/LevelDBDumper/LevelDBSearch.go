@@ -19,7 +19,7 @@ func searchForDBs() {
 	}
 	elapsed := time.Now().Sub(start)
 
-	if len(searchResult) > 0 {
+	if len(searchResult) > 0 && !quiet {
 		fmt.Println()
 	}
 
