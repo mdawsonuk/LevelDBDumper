@@ -40,7 +40,7 @@ func openDb(dbPath string) {
 		color.FgLightBlue.Println("Using leveldb.BytewiseComparator")
 		break
 	default:
-		// Default is leveldb.BytewiseComparator
+		// We don't know this comparator, break out
 		fmt.Println(fmt.Sprintf("%s %s", color.FgWhite.Render("Using unrecognised comparator:"), color.FgYellow.Render(comparator)))
 		break
 	}
@@ -112,8 +112,8 @@ func openDb(dbPath string) {
 				color.FgLightBlue.Println(fmt.Sprintf("%-58vValue:", "Key:"))
 			}
 			for index := range database.keys {
-				escapedKey := removeControlChars(database.keys[index])     //fmt.Sprintf("%q", keyName)
-				escapedValue := removeControlChars(database.values[index]) //fmt.Sprintf("%q", value)
+				escapedKey := removeControlChars(database.keys[index])
+				escapedValue := removeControlChars(database.values[index])
 				if len(escapedValue) > 80 {
 					fmt.Printf("%-64v | "+escapedValue[:80]+"...\n", color.Yellow.Render(escapedKey))
 				} else {
@@ -122,6 +122,8 @@ func openDb(dbPath string) {
 			}
 		} else {
 			color.Yellow.Println("Parsed database but no key/value pairs were found")
+			color.Yellow.Println("It is possible that key/value pairs were present, but have been deleted")
+			color.Yellow.Println("LevelDB Dumper does not currently support retrieving deleted keys")
 		}
 	}
 

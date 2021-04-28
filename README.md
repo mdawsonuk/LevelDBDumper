@@ -162,8 +162,9 @@ go build
 * ~~Batch output file (All LevelDB dumps into one file)~~ :heavy_check_mark:
 * ~~Specify last modified timestamp timezone - default to UTC~~ :heavy_check_mark:
 * Allow customisation of output name
-* Implement idb_cmp1 Google comparator for IndexedDB databases
 * Allow suppression of warning/error messages through command line e.g. `2>/dev/null`
+* Implement idb_cmp1 Google comparator for IndexedDB databases
+* Look into possibility of retrieving deleted keys from databases
 
 ## Contributing
 
