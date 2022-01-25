@@ -17,7 +17,7 @@
 	<a href="https://github.com/mdawsonuk/LevelDBDumper/releases" alt="Downloads">
 		<img src="https://img.shields.io/github/downloads/mdawsonuk/LevelDBDumper/total?style=flat-square" /></a>
 	<a href="https://github.com/mdawsonuk/LevelDBDumper/pulse" alt="Maintenance">
-		<img src="https://img.shields.io/maintenance/yes/2021?style=flat-square" /></a>
+		<img src="https://img.shields.io/maintenance/yes/2022?style=flat-square" /></a>
 	<a href="https://github.com/mdawsonuk/LevelDBDumper/tree/master/src/LevelDBDumper">
 		<img src="https://img.shields.io/github/languages/code-size/mdawsonuk/LevelDBDumper?style=flat-square"
 			alt="Repo Size"></a>
