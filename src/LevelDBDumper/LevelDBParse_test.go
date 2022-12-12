@@ -18,7 +18,7 @@ func TestGetComparator(t *testing.T) {
 
 func TestGetMalformedComparator(t *testing.T) {
 	f, _ := os.Create("MANIFEST-0001")
-	f.Write([]byte{0x00})
+	f.Write([]byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00})
 	comparator := getComparator(".")
 	if comparator != "Unknown" {
 		t.Errorf("getComparator with malformed file was incorrect, actual: %s, expected: Unknown", comparator)
