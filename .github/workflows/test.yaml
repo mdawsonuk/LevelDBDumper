@@ -41,7 +41,6 @@ jobs:
           go build -o LevelDBDumper
           export GOOS="darwin"
           go build -o LevelDBDumper.app
-          zip -q LevelDBDumper.app.zip LevelDBDumper.app
           export GOOS="windows"
           go get golang.org/x/sys/windows
           go build -o LevelDBDumper.exe
@@ -57,11 +56,10 @@ jobs:
 
           export GOOS="darwin"
           go build -o LevelDBDumper_m1.app
-          zip -q LevelDBDumper_m1.app.zip LevelDBDumper_m1.app
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: LevelDBDumper
+          name: LevelDBDumper_${{ matrix.go-version }}_${{ matrix.os }}
           path: |
             src/LevelDBDumper/LevelDBDumper*
             !src/LevelDBDumper/LevelDBDumper*.go
