@@ -58,3 +58,10 @@ jobs:
           export GOOS="darwin"
           go build -o LevelDBDumper_m1.app
           zip -q LevelDBDumper_m1.app.zip LevelDBDumper_m1.app
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: LevelDBDumper
+          path: |
+            src/LevelDBDumper/LevelDBDumper*
+            !src/LevelDBDumper/LevelDBDumper*.go
