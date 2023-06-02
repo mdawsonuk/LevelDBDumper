@@ -1,0 +1,65 @@
+name: Test
+
+on: [push]
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        go-version: [ '1.18.x', '1.19.x' ]
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Setup Go ${{ matrix.go-version }}
+        uses: actions/setup-go@v4
+        with:
+          go-version: ${{ matrix.go-version }}
+      - name: Install Dependencies
+        shell: bash
+        run: |
+          export GO111MODULE=auto
+          go get github.com/syndtr/goleveldb/leveldb
+          go get github.com/hashicorp/go-version
+          go get github.com/gookit/color
+          if [ "$RUNNER_OS" = "Windows" ]; then go get golang.org/x/sys/windows; fi
+          go get github.com/securego/gosec/cmd/gosec
+      - name: Run Tests
+        shell: bash
+        run: |
+          cd src/LevelDBDumper
+          
+          go test -v -cover -count=1 -coverprofile=coverage.out
+          go tool cover -func=coverage.out
+      - name: Build LevelDB Dumper
+        shell: bash
+        run: |
+          cd src/LevelDBDumper
+
+          export GOOS="linux"
+          go build -o LevelDBDumper
+          export GOOS="darwin"
+          go build -o LevelDBDumper.app
+          export GOOS="windows"
+          go get golang.org/x/sys/windows
+          go build -o LevelDBDumper.exe
+
+          export GOARCH="386"
+
+          export GOOS="windows"
+          go build -o LevelDBDumper_x86.exe
+          export GOOS="linux"
+          go build -o LevelDBDumper_x86
+
+          export GOARCH="arm64"
+
+          export GOOS="darwin"
+          go build -o LevelDBDumper_m1.app
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: LevelDBDumper_${{ matrix.go-version }}_${{ matrix.os }}
+          path: |
+            src/LevelDBDumper/LevelDBDumper*
+            !src/LevelDBDumper/LevelDBDumper*.go
