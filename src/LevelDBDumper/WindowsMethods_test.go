@@ -1,3 +1,4 @@
+//go:build windows
 // +build windows
 
 package main
@@ -9,7 +10,7 @@ import (
 
 func TestNotAdministrator(t *testing.T) {
 	isAdmin := isAdmin()
-	if os.Getenv("TRAVIS") == "true" {
+	if os.Getenv("GITHUB_ACTIONS") == "true" {
 		if !isAdmin {
 			t.Errorf("isAdmin, actual: %t, expected: true", isAdmin)
 		}

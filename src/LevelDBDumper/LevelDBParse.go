@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 	"unicode"
 
@@ -156,7 +157,15 @@ func getComparator(dbPath string) string {
 	for i, b := range contents {
 		// Read until we reach the first non-graphic byte, identifying the end of the comparator string
 		if !unicode.IsGraphic(rune(b)) {
-			return string(contents[:i])
+			comparator := strings.Map(func(r rune) rune {
+				if unicode.IsPrint(r) {
+					return r
+				}
+				return -1
+			}, string(contents[:i]))
+			if len(comparator) > 0 {
+				return comparator
+			}
 		}
 	}
 
