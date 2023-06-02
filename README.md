@@ -73,11 +73,12 @@ _This works on Local Storage LevelDBs - support for IndexedDBs using the idb_cmp
       z/timezone          Specify the IANA timezone to use when using timestamps. Default is UTC
       no-header           Don't display the header
       u/check-update      Check for updates only
+      offline             Runs in offline mode, this doesn't check for updates
 
 Short options (single letter) are prefixed with a single dash. Long commands are prefixed with two dashes
 
 Examples: LevelDBParser.exe -d "C:\Temp\leveldb"
-          LevelDBParser.exe -d "C:\Temp\leveldb" -o "C:\Temp" -q
+          LevelDBParser.exe -d "C:\Temp\leveldb" -o "C:\Temp" -q --offline
           LevelDBParser.exe -d "C:\Temp\leveldb" --quiet --no-header --clean-output
           LevelDBParser.exe -d "C:\Temp\leveldb" -b --outputType json -outputFile Evidence.json
           LevelDBParser.exe -d "C:\Temp\leveldb" -t csv -f LevelDB.csv -o Evidence -b --quiet

@@ -12,7 +12,7 @@ import (
 )
 
 // VERSION of LevelDB Dumper
-const VERSION string = "3.0.0-beta.1"
+const VERSION string = "3.0.0"
 
 var (
 	searchResult    []string
@@ -43,15 +43,14 @@ func dumpDBs(args []string) {
 	fmt.Println("Command Line:", strings.Join(args[1:], " "))
 	fmt.Println()
 
-	needsUpdate, latestVersion := checkUpdate(VERSION)
+	if !offline && checkForUpdate {
+		needsUpdate, latestVersion := checkUpdate(VERSION)
 
-	if !needsUpdate {
-		color.Magenta.Println("You are using the latest version of LevelDB Dumper")
-		if checkForUpdate {
-			os.Exit(0)
+		if !needsUpdate {
+			color.Magenta.Println("You are using the latest version of LevelDB Dumper")
+		} else {
+			color.Cyan.Println(fmt.Sprintf("Version %s is now available for LevelDB Dumper - please update!", latestVersion))
 		}
-	} else if checkForUpdate {
-		color.Cyan.Println(fmt.Sprintf("Version %s is now available for LevelDB Dumper - please update!", latestVersion))
 		os.Exit(0)
 	}
 
@@ -115,8 +114,18 @@ func dumpDBs(args []string) {
 	elapsed := time.Now().Sub(start)
 	color.FgLightBlue.Println(fmt.Sprintf("Completed search in %v", elapsed))
 
-	if needsUpdate {
-		color.Magenta.Println(fmt.Sprintf("Version %s is now available for LevelDB Dumper - please update!", latestVersion))
+	if !offline {
+		needsUpdate, latestVersion := checkUpdate(VERSION)
+
+		if !needsUpdate {
+			color.Magenta.Println("You are using the latest version of LevelDB Dumper")
+			if checkForUpdate {
+				os.Exit(0)
+			}
+		} else if checkForUpdate {
+			color.Cyan.Println(fmt.Sprintf("Version %s is now available for LevelDB Dumper - please update!", latestVersion))
+			os.Exit(0)
+		}
 	}
 
 	os.Exit(0)

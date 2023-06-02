@@ -19,6 +19,7 @@ var (
 	noHeader       bool
 	checkForUpdate bool
 	cleanOutput    bool
+	offline        bool
 )
 
 func getArgs(args []string) {
@@ -61,6 +62,9 @@ func getArgs(args []string) {
 		if (args[i] == "-z" || args[i] == "--timezone") && i+1 < len(args) {
 			timezone = args[i+1]
 		}
+		if args[i] == "--offline" {
+			offline = true
+		}
 	}
 }
 
@@ -76,11 +80,12 @@ func printUsage() {
 	fmt.Println("      z/timezone          Specify the IANA timezone to use when using timestamps. Default is UTC")
 	fmt.Println("      no-header           Don't display the header")
 	fmt.Println("      u/check-update      Check for updates only")
+	fmt.Println("      offline             Runs in offline mode, this doesn't check for updates")
 	fmt.Println()
 	fmt.Println("Short options (single letter) are prefixed with a single dash. Long commands are prefixed with two dashes")
 	fmt.Println()
 	fmt.Println("Examples: LevelDBParser.exe -d \"C:\\Temp\\leveldb\"")
-	fmt.Println("          LevelDBParser.exe -d \"C:\\Temp\\leveldb\" -o \"C:\\Temp\" -q")
+	fmt.Println("          LevelDBParser.exe -d \"C:\\Temp\\leveldb\" -o \"C:\\Temp\" -q --offline")
 	fmt.Println("          LevelDBParser.exe -d \"C:\\Temp\\leveldb\" --quiet --no-header --clean-output")
 	fmt.Println("          LevelDBParser.exe -d \"C:\\Temp\\leveldb\" -b --outputType json -outputFile Evidence.json")
 	fmt.Println("          LevelDBParser.exe -d \"C:\\Temp\\leveldb\" -t csv -f LevelDB.csv -o Evidence -b --quiet")
