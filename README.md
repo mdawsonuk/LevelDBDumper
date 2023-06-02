@@ -2,8 +2,6 @@
   <h2 align="center">LevelDB Dumper</h3>
 	
   <p align="center">
-  <a href="https://travis-ci.com/github/mdawsonuk/LevelDBDumper" alt="Travis CI">
-		<img src="https://img.shields.io/travis/com/mdawsonuk/LevelDBDumper?style=flat-square" /></a>
   <a href="https://goreportcard.com/report/github.com/mdawsonuk/LevelDBDumper" alt="Go Report Card">
 		<img src="https://goreportcard.com/badge/github.com/mdawsonuk/LevelDBDumper?style=flat-square" /></a>
   <a href="#" alt="Go Version">
@@ -17,7 +15,7 @@
 	<a href="https://github.com/mdawsonuk/LevelDBDumper/releases" alt="Downloads">
 		<img src="https://img.shields.io/github/downloads/mdawsonuk/LevelDBDumper/total?style=flat-square" /></a>
 	<a href="https://github.com/mdawsonuk/LevelDBDumper/pulse" alt="Maintenance">
-		<img src="https://img.shields.io/maintenance/yes/2022?style=flat-square" /></a>
+		<img src="https://img.shields.io/maintenance/yes/2023?style=flat-square" /></a>
 	<a href="https://github.com/mdawsonuk/LevelDBDumper/tree/master/src/LevelDBDumper">
 		<img src="https://img.shields.io/github/languages/code-size/mdawsonuk/LevelDBDumper?style=flat-square"
 			alt="Repo Size"></a>

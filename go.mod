@@ -7,5 +7,5 @@ require (
 	github.com/hashicorp/go-version v1.6.0
 	github.com/securego/gosec v0.0.0-20200401082031-e946c8c39989 // indirect
 	github.com/syndtr/goleveldb v1.0.0
-	golang.org/x/sys v0.3.0
+	golang.org/x/sys v0.1.0
 )
