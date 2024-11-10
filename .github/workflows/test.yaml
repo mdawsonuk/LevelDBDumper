@@ -13,7 +13,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Setup Go ${{ matrix.go-version }}
-        uses: actions/setup-go@v4
+        uses: actions/setup-go@v5
         with:
           go-version: ${{ matrix.go-version }}
       - name: Install Dependencies
@@ -57,7 +57,7 @@ jobs:
           export GOOS="darwin"
           go build -o LevelDBDumper_m1.app
       - name: Upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: LevelDBDumper_${{ matrix.go-version }}_${{ matrix.os }}
           path: |
