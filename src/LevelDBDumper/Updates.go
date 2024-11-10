@@ -30,14 +30,16 @@ func checkUpdatePreleaseStream(ver string) (*version.Version, string) {
 		retVer, _ := version.NewSemver(ver)
 		return retVer, ver
 	}
+	if resp.StatusCode != 200 {
+		retVer, _ := version.NewSemver(ver)
+		return retVer, ver
+	}
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
 
 	var results []map[string]interface{}
 
 	json.Unmarshal(body, &results)
-
-	// Drop the v from the tag
 	tag := fmt.Sprintf("%s", results[0]["tag_name"])[1:]
 
 	latestVersion, _ := version.NewSemver(tag)
@@ -54,17 +56,27 @@ func checkUpdateNormalReleaseStream(ver string) (*version.Version, string) {
 		retVer, _ := version.NewSemver(ver)
 		return retVer, ver
 	}
+	if resp.StatusCode != 200 {
+		retVer, _ := version.NewSemver(ver)
+		return retVer, ver
+	}
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
 
-	var results map[string]interface{}
+	var results interface{}
 
 	json.Unmarshal(body, &results)
 
-	// Drop the v from the tag
-	tag := fmt.Sprintf("%s", results["tag_name"])[1:]
+	switch results := results.(type) {
+	case map[string]interface{}:
+		// Drop the v from the tag
+		tag := fmt.Sprintf("%s", results["tag_name"])[1:]
 
-	latestVersion, _ := version.NewSemver(tag)
+		latestVersion, _ := version.NewSemver(tag)
 
-	return latestVersion, tag
+		return latestVersion, tag
+	}
+
+	retVer, _ := version.NewSemver(ver)
+	return retVer, ver
 }
