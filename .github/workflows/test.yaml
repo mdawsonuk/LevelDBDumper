@@ -6,12 +6,12 @@ jobs:
   test:
     strategy:
       matrix:
-        go-version: [ '1.18.x', '1.19.x' ]
+        go-version: [ '1.23.x', '1.22.x' ]
         os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup Go ${{ matrix.go-version }}
         uses: actions/setup-go@v4
         with:
