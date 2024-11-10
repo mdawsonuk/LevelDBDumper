@@ -15,7 +15,7 @@
 	<a href="https://github.com/mdawsonuk/LevelDBDumper/releases" alt="Downloads">
 		<img src="https://img.shields.io/github/downloads/mdawsonuk/LevelDBDumper/total?style=flat-square" /></a>
 	<a href="https://github.com/mdawsonuk/LevelDBDumper/pulse" alt="Maintenance">
-		<img src="https://img.shields.io/maintenance/yes/2023?style=flat-square" /></a>
+		<img src="https://img.shields.io/maintenance/yes/2024?style=flat-square" /></a>
 	<a href="https://github.com/mdawsonuk/LevelDBDumper/tree/master/src/LevelDBDumper">
 		<img src="https://img.shields.io/github/languages/code-size/mdawsonuk/LevelDBDumper?style=flat-square"
 			alt="Repo Size"></a>
@@ -102,7 +102,7 @@ To get a local copy up and running follow these simple steps.
 
 ### Prerequisites
 
-LevelDB Dumper is written in Go, so it can be run cross-platform. If you are building from source, you will need to [install Golang](https://golang.org/doc/install)
+LevelDB Dumper is written in Go, so it can be run cross-platform. If you are building from source, you will need to [install Golang](https://go.dev/doc/install)
 
 ### Installation
 
